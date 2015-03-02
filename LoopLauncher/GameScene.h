@@ -7,7 +7,12 @@
 //
 
 #import <SpriteKit/SpriteKit.h>
+#import "AKFoundation.h"
+#import "SoundFilePlayer.h"
+#import "SoundInteractor.h"
 
 @interface GameScene : SKScene
+
+@property NSMutableArray *soundLoopers;
 
 @end
