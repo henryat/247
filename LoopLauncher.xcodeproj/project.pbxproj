@@ -1,0 +1,439 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BAAA49941AA42580004FE865 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BAAA49931AA42580004FE865 /* main.m */; };
+		BAAA49971AA42580004FE865 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BAAA49961AA42580004FE865 /* AppDelegate.m */; };
+		BAAA499A1AA42580004FE865 /* GameScene.m in Sources */ = {isa = PBXBuildFile; fileRef = BAAA49991AA42580004FE865 /* GameScene.m */; };
+		BAAA499C1AA42580004FE865 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = BAAA499B1AA42580004FE865 /* GameScene.sks */; };
+		BAAA499F1AA42580004FE865 /* GameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BAAA499E1AA42580004FE865 /* GameViewController.m */; };
+		BAAA49A21AA42580004FE865 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BAAA49A01AA42580004FE865 /* Main.storyboard */; };
+		BAAA49A41AA42580004FE865 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BAAA49A31AA42580004FE865 /* Images.xcassets */; };
+		BAAA49A71AA42580004FE865 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = BAAA49A51AA42580004FE865 /* LaunchScreen.xib */; };
+		BAAA49B31AA42580004FE865 /* LoopLauncherTests.m in Sources */ = {isa = PBXBuildFile; fileRef = BAAA49B21AA42580004FE865 /* LoopLauncherTests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BAAA49AD1AA42580004FE865 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BAAA49861AA42580004FE865 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BAAA498D1AA42580004FE865;
+			remoteInfo = LoopLauncher;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		BAAA498E1AA42580004FE865 /* LoopLauncher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LoopLauncher.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BAAA49921AA42580004FE865 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BAAA49931AA42580004FE865 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		BAAA49951AA42580004FE865 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		BAAA49961AA42580004FE865 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		BAAA49981AA42580004FE865 /* GameScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameScene.h; sourceTree = "<group>"; };
+		BAAA49991AA42580004FE865 /* GameScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GameScene.m; sourceTree = "<group>"; };
+		BAAA499B1AA42580004FE865 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
+		BAAA499D1AA42580004FE865 /* GameViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameViewController.h; sourceTree = "<group>"; };
+		BAAA499E1AA42580004FE865 /* GameViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GameViewController.m; sourceTree = "<group>"; };
+		BAAA49A11AA42580004FE865 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		BAAA49A31AA42580004FE865 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		BAAA49A61AA42580004FE865 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		BAAA49AC1AA42580004FE865 /* LoopLauncherTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LoopLauncherTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BAAA49B11AA42580004FE865 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BAAA49B21AA42580004FE865 /* LoopLauncherTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoopLauncherTests.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BAAA498B1AA42580004FE865 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BAAA49A91AA42580004FE865 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BAAA49851AA42580004FE865 = {
+			isa = PBXGroup;
+			children = (
+				BAAA49901AA42580004FE865 /* LoopLauncher */,
+				BAAA49AF1AA42580004FE865 /* LoopLauncherTests */,
+				BAAA498F1AA42580004FE865 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BAAA498F1AA42580004FE865 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BAAA498E1AA42580004FE865 /* LoopLauncher.app */,
+				BAAA49AC1AA42580004FE865 /* LoopLauncherTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BAAA49901AA42580004FE865 /* LoopLauncher */ = {
+			isa = PBXGroup;
+			children = (
+				BAAA49951AA42580004FE865 /* AppDelegate.h */,
+				BAAA49961AA42580004FE865 /* AppDelegate.m */,
+				BAAA49981AA42580004FE865 /* GameScene.h */,
+				BAAA49991AA42580004FE865 /* GameScene.m */,
+				BAAA499B1AA42580004FE865 /* GameScene.sks */,
+				BAAA499D1AA42580004FE865 /* GameViewController.h */,
+				BAAA499E1AA42580004FE865 /* GameViewController.m */,
+				BAAA49A01AA42580004FE865 /* Main.storyboard */,
+				BAAA49A31AA42580004FE865 /* Images.xcassets */,
+				BAAA49A51AA42580004FE865 /* LaunchScreen.xib */,
+				BAAA49911AA42580004FE865 /* Supporting Files */,
+			);
+			path = LoopLauncher;
+			sourceTree = "<group>";
+		};
+		BAAA49911AA42580004FE865 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BAAA49921AA42580004FE865 /* Info.plist */,
+				BAAA49931AA42580004FE865 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		BAAA49AF1AA42580004FE865 /* LoopLauncherTests */ = {
+			isa = PBXGroup;
+			children = (
+				BAAA49B21AA42580004FE865 /* LoopLauncherTests.m */,
+				BAAA49B01AA42580004FE865 /* Supporting Files */,
+			);
+			path = LoopLauncherTests;
+			sourceTree = "<group>";
+		};
+		BAAA49B01AA42580004FE865 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BAAA49B11AA42580004FE865 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BAAA498D1AA42580004FE865 /* LoopLauncher */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BAAA49B61AA42580004FE865 /* Build configuration list for PBXNativeTarget "LoopLauncher" */;
+			buildPhases = (
+				BAAA498A1AA42580004FE865 /* Sources */,
+				BAAA498B1AA42580004FE865 /* Frameworks */,
+				BAAA498C1AA42580004FE865 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LoopLauncher;
+			productName = LoopLauncher;
+			productReference = BAAA498E1AA42580004FE865 /* LoopLauncher.app */;
+			productType = "com.apple.product-type.application";
+		};
+		BAAA49AB1AA42580004FE865 /* LoopLauncherTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BAAA49B91AA42580004FE865 /* Build configuration list for PBXNativeTarget "LoopLauncherTests" */;
+			buildPhases = (
+				BAAA49A81AA42580004FE865 /* Sources */,
+				BAAA49A91AA42580004FE865 /* Frameworks */,
+				BAAA49AA1AA42580004FE865 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BAAA49AE1AA42580004FE865 /* PBXTargetDependency */,
+			);
+			name = LoopLauncherTests;
+			productName = LoopLauncherTests;
+			productReference = BAAA49AC1AA42580004FE865 /* LoopLauncherTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BAAA49861AA42580004FE865 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0610;
+				ORGANIZATIONNAME = "Henry Thiemann";
+				TargetAttributes = {
+					BAAA498D1AA42580004FE865 = {
+						CreatedOnToolsVersion = 6.1.1;
+					};
+					BAAA49AB1AA42580004FE865 = {
+						CreatedOnToolsVersion = 6.1.1;
+						TestTargetID = BAAA498D1AA42580004FE865;
+					};
+				};
+			};
+			buildConfigurationList = BAAA49891AA42580004FE865 /* Build configuration list for PBXProject "LoopLauncher" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = BAAA49851AA42580004FE865;
+			productRefGroup = BAAA498F1AA42580004FE865 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				BAAA498D1AA42580004FE865 /* LoopLauncher */,
+				BAAA49AB1AA42580004FE865 /* LoopLauncherTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BAAA498C1AA42580004FE865 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BAAA49A71AA42580004FE865 /* LaunchScreen.xib in Resources */,
+				BAAA49A41AA42580004FE865 /* Images.xcassets in Resources */,
+				BAAA499C1AA42580004FE865 /* GameScene.sks in Resources */,
+				BAAA49A21AA42580004FE865 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BAAA49AA1AA42580004FE865 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BAAA498A1AA42580004FE865 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BAAA499F1AA42580004FE865 /* GameViewController.m in Sources */,
+				BAAA49971AA42580004FE865 /* AppDelegate.m in Sources */,
+				BAAA499A1AA42580004FE865 /* GameScene.m in Sources */,
+				BAAA49941AA42580004FE865 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BAAA49A81AA42580004FE865 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BAAA49B31AA42580004FE865 /* LoopLauncherTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BAAA49AE1AA42580004FE865 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BAAA498D1AA42580004FE865 /* LoopLauncher */;
+			targetProxy = BAAA49AD1AA42580004FE865 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		BAAA49A01AA42580004FE865 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BAAA49A11AA42580004FE865 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		BAAA49A51AA42580004FE865 /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BAAA49A61AA42580004FE865 /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		BAAA49B41AA42580004FE865 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BAAA49B51AA42580004FE865 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		BAAA49B71AA42580004FE865 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = LoopLauncher/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		BAAA49B81AA42580004FE865 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = LoopLauncher/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		BAAA49BA1AA42580004FE865 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = LoopLauncherTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LoopLauncher.app/LoopLauncher";
+			};
+			name = Debug;
+		};
+		BAAA49BB1AA42580004FE865 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = LoopLauncherTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LoopLauncher.app/LoopLauncher";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BAAA49891AA42580004FE865 /* Build configuration list for PBXProject "LoopLauncher" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BAAA49B41AA42580004FE865 /* Debug */,
+				BAAA49B51AA42580004FE865 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BAAA49B61AA42580004FE865 /* Build configuration list for PBXNativeTarget "LoopLauncher" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BAAA49B71AA42580004FE865 /* Debug */,
+				BAAA49B81AA42580004FE865 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		BAAA49B91AA42580004FE865 /* Build configuration list for PBXNativeTarget "LoopLauncherTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BAAA49BA1AA42580004FE865 /* Debug */,
+				BAAA49BB1AA42580004FE865 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BAAA49861AA42580004FE865 /* Project object */;
+}
