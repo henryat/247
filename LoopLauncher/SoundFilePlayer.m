@@ -14,10 +14,11 @@
 {
     self = [super init];
     if (self) {
-        
         SoundFilePlayerNote *note = [[SoundFilePlayerNote alloc] init];
         [self addNoteProperty:note.speed];
         [self addNoteProperty:note.pan];
+        
+        NSLog(@"test commit");
         
         NSString *pathToSoundFile;
         pathToSoundFile = [[NSBundle mainBundle] pathForResource:filename ofType:@"aiff"];
