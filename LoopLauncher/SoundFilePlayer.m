@@ -10,16 +10,17 @@
 
 @implementation SoundFilePlayer
 
-- (instancetype)initWithFilename:(NSString *)filename
+- (instancetype)initWithInfoArray:(NSArray *)info
 {
     self = [super init];
     if (self) {
         SoundFilePlayerNote *note = [[SoundFilePlayerNote alloc] init];
         [self addNoteProperty:note.speed];
         [self addNoteProperty:note.pan];
+        NSString *fileName = info[0];
                 
         NSString *pathToSoundFile;
-        pathToSoundFile = [[NSBundle mainBundle] pathForResource:filename ofType:@"aiff"];
+        pathToSoundFile = [[NSBundle mainBundle] pathForResource:fileName ofType:@"aiff"];
         
         AKSoundFile *soundFile;
         soundFile = [[AKSoundFile alloc] initWithFilename: pathToSoundFile];
@@ -30,9 +31,14 @@
         [self addProperty:_amplitude];
         looper.amplitude = _amplitude;
         [self connect:looper];
+        self.playbackLevel = ((NSNumber *) info[1]).doubleValue;
         
         AKAudioOutput *audioOutput = [[AKAudioOutput alloc] initWithAudioSource:looper];
         [self connect:audioOutput];
+        self.outputStream = audioOutput;
+        
+        AKTrackedAmplitude *trackedAmplitude = [[AKTrackedAmplitude alloc] initWithAudioSource:looper];
+        self.trackedAmplitude = trackedAmplitude;
     }
     
     return self;
