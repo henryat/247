@@ -14,5 +14,8 @@
 @interface GameScene : SKScene
 
 @property NSMutableArray *soundLoopers;
+@property AKAudioAnalyzer *analyzer;
+@property AKEvent *updateAnalysis;
+@property AKSequence *analysisSequence;
 
 @end

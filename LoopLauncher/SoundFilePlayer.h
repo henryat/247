@@ -16,7 +16,8 @@
 @property AKInstrumentProperty *amplitude;
 @property double playbackLevel;
 @property AKAudioOutput *outputStream;
-@property AKTrackedAmplitude *trackedAmplitude;
+@property AKAudioAnalyzer *audioAnalyzer;
+
 
 @end
 

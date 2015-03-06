@@ -18,8 +18,17 @@
     [AKOrchestra start];
     for (SoundFilePlayer *player in _soundLoopers) {
         [player play];
+        [player.audioAnalyzer play];
     }
+    self.analyzer = ((SoundFilePlayer *)_soundLoopers[0]).audioAnalyzer;
     
+    _analysisSequence = [AKSequence sequence];
+    _updateAnalysis = [[AKEvent alloc] initWithBlock:^{
+        [self performSelectorOnMainThread:@selector(updateUI) withObject:self waitUntilDone:NO];
+        [_analysisSequence addEvent:_updateAnalysis afterDuration:0.1];
+    }];
+    [_analysisSequence addEvent:_updateAnalysis];
+    [_analysisSequence play];
 }
 
 // create audio looper and interaction object for each sound file
@@ -87,16 +96,55 @@
                 [player.amplitude setValue:player.playbackLevel];
                 interactor.fillColor = [SKColor greenColor];
                 interactor.state = YES;
-                NSLog(@"analyzer audio level = %f", player.trackedAmplitude.value);
+                NSLog(@"analyzer audio level = %f", player.audioAnalyzer.trackedAmplitude.value);
             } else {
                 SoundFilePlayer *player = interactor.player;
-                NSLog(@"analyzer audio level = %f", player.trackedAmplitude.value);
+                NSLog(@"analyzer audio level = %f", player.audioAnalyzer.trackedAmplitude.value);
                 [player.amplitude setValue:0.0];
                 interactor.fillColor = [SKColor darkGrayColor];
                 interactor.state = NO;
             }
         }
     }
+}
+
+- (void)updateUI {
+    
+// THIS IS WHERE WE WOULD WANT TRACKED AMPLITUDE TO FIRE
+    if (self.analyzer.trackedAmplitude.value > 0.01) {
+        NSLog(@"Hooray");
+//        frequencyLabel.text = [NSString stringWithFormat:@"%0.1f", analyzer.trackedFrequency.value];
+//        
+//        float frequency = analyzer.trackedFrequency.value;
+//        while (frequency > [noteFrequencies.lastObject floatValue]) {
+//            frequency = frequency / 2.0;
+//        }
+//        while (frequency < [noteFrequencies.firstObject floatValue]) {
+//            frequency = frequency * 2.0;
+//        }
+//        
+//        float minDistance = 10000;
+//        int index =  0;
+//        for (int i = 0; i < noteFrequencies.count; i++) {
+//            float distance = fabs([noteFrequencies[i] floatValue] - frequency);
+//            if (distance < minDistance) {
+//                index = i;
+//                minDistance = distance;
+//            }
+//        }
+//        int octave = (int)log2f(analyzer.trackedFrequency.value / frequency);
+//        NSString *noteName = [NSString stringWithFormat:@"%@%d", noteNamesWithSharps[index], octave];
+//        noteNameWithSharpsLabel.text = noteName;
+//        noteName = [NSString stringWithFormat:@"%@%d", noteNamesWithFlats[index], octave];
+//        noteNameWithFlatsLabel.text = noteName;
+//        
+//        [frequencyLabel setNeedsDisplay];
+//        [amplitudeLabel setNeedsDisplay];
+//        [noteNameWithSharpsLabel setNeedsDisplay];
+//        [noteNameWithFlatsLabel setNeedsDisplay];
+    }
+//    amplitudeLabel.text = [NSString stringWithFormat:@"%0.2f", analyzer.trackedAmplitude.value];
+    
 }
 
 -(void)update:(CFTimeInterval)currentTime {

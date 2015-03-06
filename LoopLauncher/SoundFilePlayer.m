@@ -37,8 +37,9 @@
         [self connect:audioOutput];
         self.outputStream = audioOutput;
         
-        AKTrackedAmplitude *trackedAmplitude = [[AKTrackedAmplitude alloc] initWithAudioSource:looper];
-        self.trackedAmplitude = trackedAmplitude;
+        // THIS IS WHERE WE WOULD HOOK UP AUDIOANALYZER TO SOURCE
+        AKAudioAnalyzer *audioAnalyzer = [[AKAudioAnalyzer alloc] initWithAudioSource:audioOutput];
+        self.audioAnalyzer = audioAnalyzer;
     }
     
     return self;
