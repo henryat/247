@@ -20,12 +20,11 @@
         [player play];
         [player.audioAnalyzer play];
     }
-    self.analyzer = ((SoundFilePlayer *)_soundLoopers[0]).audioAnalyzer;
     
     _analysisSequence = [AKSequence sequence];
     _updateAnalysis = [[AKEvent alloc] initWithBlock:^{
         [self performSelectorOnMainThread:@selector(updateUI) withObject:self waitUntilDone:NO];
-        [_analysisSequence addEvent:_updateAnalysis afterDuration:0.1];
+        [_analysisSequence addEvent:_updateAnalysis afterDuration:0.01];
     }];
     [_analysisSequence addEvent:_updateAnalysis];
     [_analysisSequence play];
@@ -39,12 +38,14 @@
     NSMutableArray *soundFiles = [[NSMutableArray alloc] initWithContentsOfFile:pathToPlist];
     
     _soundLoopers = [[NSMutableArray alloc] init];
+    _soundInteractors = [[NSMutableArray alloc] init];
     
     // create sound file player for each file
     for (NSArray *soundFile in soundFiles) {
         SoundFilePlayer *player = [[SoundFilePlayer alloc] initWithInfoArray:soundFile];
         [_soundLoopers addObject:player];
         [AKOrchestra addInstrument:player];
+        [AKOrchestra addInstrument:player.audioAnalyzer];
     }
     
     CGFloat windowWidth = [UIScreen mainScreen].bounds.size.width;
@@ -52,6 +53,8 @@
     
     CGFloat rectSize = (windowWidth * 0.75) / 4.0;
     CGFloat rectBufferSize = (windowWidth * 0.25) / 5.0;
+    
+    _baseInteractorSize = rectSize * .7;
     
     int arrayIndex = 0;
     for (int i = 0; i < 4; i++) {
@@ -61,16 +64,13 @@
             
             CGFloat x = j * rectSize + (j + 1) * rectBufferSize;
             CGFloat y = windowHeight - (i + 1) * rectSize - (i + 1) * rectBufferSize - 100;
-//            CGRect rect = CGRectMake(x, y, rectSize, rectSize);
             
-            SoundInteractor *interactor = [SoundInteractor shapeNodeWithCircleOfRadius:rectSize/2];
+            SoundInteractor *interactor = [SoundInteractor shapeNodeWithCircleOfRadius:_baseInteractorSize/2];
             interactor.position = CGPointMake(x + rectSize/2, y);
             interactor.strokeColor = [SKColor grayColor];
             interactor.fillColor = [SKColor darkGrayColor];
             interactor.alpha = .4;
             interactor.lineWidth = 3;
-            interactor.xScale = .6;
-            interactor.yScale = .6;
             
             [self addChild:interactor];
             
@@ -78,6 +78,7 @@
             interactor.player = player;
             interactor.state = NO;
             arrayIndex++;
+            [_soundInteractors addObject:interactor];
         }
     }
 }
@@ -110,40 +111,17 @@
 
 - (void)updateUI {
     
-// THIS IS WHERE WE WOULD WANT TRACKED AMPLITUDE TO FIRE
-    if (self.analyzer.trackedAmplitude.value > 0.01) {
-        NSLog(@"Hooray");
-//        frequencyLabel.text = [NSString stringWithFormat:@"%0.1f", analyzer.trackedFrequency.value];
-//        
-//        float frequency = analyzer.trackedFrequency.value;
-//        while (frequency > [noteFrequencies.lastObject floatValue]) {
-//            frequency = frequency / 2.0;
-//        }
-//        while (frequency < [noteFrequencies.firstObject floatValue]) {
-//            frequency = frequency * 2.0;
-//        }
-//        
-//        float minDistance = 10000;
-//        int index =  0;
-//        for (int i = 0; i < noteFrequencies.count; i++) {
-//            float distance = fabs([noteFrequencies[i] floatValue] - frequency);
-//            if (distance < minDistance) {
-//                index = i;
-//                minDistance = distance;
-//            }
-//        }
-//        int octave = (int)log2f(analyzer.trackedFrequency.value / frequency);
-//        NSString *noteName = [NSString stringWithFormat:@"%@%d", noteNamesWithSharps[index], octave];
-//        noteNameWithSharpsLabel.text = noteName;
-//        noteName = [NSString stringWithFormat:@"%@%d", noteNamesWithFlats[index], octave];
-//        noteNameWithFlatsLabel.text = noteName;
-//        
-//        [frequencyLabel setNeedsDisplay];
-//        [amplitudeLabel setNeedsDisplay];
-//        [noteNameWithSharpsLabel setNeedsDisplay];
-//        [noteNameWithFlatsLabel setNeedsDisplay];
+    for (SoundInteractor *interactor in _soundInteractors) {
+        double soundAmplitude = interactor.player.audioAnalyzer.trackedAmplitude.value;
+        if(soundAmplitude >= .01){
+            double scaleFactor = 1 + (soundAmplitude * 5);
+            interactor.xScale = scaleFactor;
+            interactor.yScale = scaleFactor;
+        } else {
+            interactor.xScale = 1;
+            interactor.yScale = 1;
+        }
     }
-//    amplitudeLabel.text = [NSString stringWithFormat:@"%0.2f", analyzer.trackedAmplitude.value];
     
 }
 

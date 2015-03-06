@@ -15,9 +15,8 @@
 
 @property AKInstrumentProperty *amplitude;
 @property double playbackLevel;
-@property AKAudioOutput *outputStream;
+@property (readonly) AKAudio *outputStream;
 @property AKAudioAnalyzer *audioAnalyzer;
-
 
 @end
 
