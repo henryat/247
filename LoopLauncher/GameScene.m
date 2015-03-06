@@ -27,13 +27,13 @@
     
     // load file names from plist into array
     NSString *pathToPlist = [[NSBundle mainBundle] pathForResource:@"relaxation" ofType:@"plist"];
-    NSMutableArray *fileNames = [[NSMutableArray alloc] initWithContentsOfFile:pathToPlist];
+    NSMutableArray *soundFiles = [[NSMutableArray alloc] initWithContentsOfFile:pathToPlist];
     
     _soundLoopers = [[NSMutableArray alloc] init];
     
     // create sound file player for each file
-    for (NSString *fileName in fileNames) {
-        SoundFilePlayer *player = [[SoundFilePlayer alloc] initWithFilename:fileName];
+    for (NSArray *soundFile in soundFiles) {
+        SoundFilePlayer *player = [[SoundFilePlayer alloc] initWithInfoArray:soundFile];
         [_soundLoopers addObject:player];
         [AKOrchestra addInstrument:player];
     }
@@ -52,12 +52,16 @@
             
             CGFloat x = j * rectSize + (j + 1) * rectBufferSize;
             CGFloat y = windowHeight - (i + 1) * rectSize - (i + 1) * rectBufferSize - 100;
-            CGRect rect = CGRectMake(x, y, rectSize, rectSize);
+//            CGRect rect = CGRectMake(x, y, rectSize, rectSize);
             
-            SoundInteractor *interactor = [SoundInteractor shapeNodeWithRect:rect];
+            SoundInteractor *interactor = [SoundInteractor shapeNodeWithCircleOfRadius:rectSize/2];
+            interactor.position = CGPointMake(x + rectSize/2, y);
             interactor.strokeColor = [SKColor grayColor];
             interactor.fillColor = [SKColor darkGrayColor];
+            interactor.alpha = .4;
             interactor.lineWidth = 3;
+            interactor.xScale = .6;
+            interactor.yScale = .6;
             
             [self addChild:interactor];
             
@@ -80,11 +84,13 @@
             SoundInteractor *interactor = (SoundInteractor *)touchedNode;
             if (interactor.state == NO) {
                 SoundFilePlayer *player = interactor.player;
-                [player.amplitude setValue:0.2];
+                [player.amplitude setValue:player.playbackLevel];
                 interactor.fillColor = [SKColor greenColor];
                 interactor.state = YES;
+                NSLog(@"analyzer audio level = %f", player.trackedAmplitude.value);
             } else {
                 SoundFilePlayer *player = interactor.player;
+                NSLog(@"analyzer audio level = %f", player.trackedAmplitude.value);
                 [player.amplitude setValue:0.0];
                 interactor.fillColor = [SKColor darkGrayColor];
                 interactor.state = NO;

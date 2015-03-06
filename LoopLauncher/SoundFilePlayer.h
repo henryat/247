@@ -7,12 +7,16 @@
 //
 
 #import "AKFoundation.h"
+#import "AKAudioAnalyzer.h"
 
 @interface SoundFilePlayer : AKInstrument
 
-- (instancetype)initWithFilename:(NSString *)filename;
+- (instancetype)initWithInfoArray:(NSArray *)info;
 
 @property AKInstrumentProperty *amplitude;
+@property double playbackLevel;
+@property AKAudioOutput *outputStream;
+@property AKTrackedAmplitude *trackedAmplitude;
 
 @end
 
