@@ -11,12 +11,15 @@
 #import "SoundFilePlayer.h"
 #import "SoundInteractor.h"
 
-@interface GameScene : SKScene
+@interface GameScene : SKScene <UIGestureRecognizerDelegate, SKPhysicsContactDelegate>
 
 @property NSMutableArray *soundLoopers;
 @property NSMutableArray *soundInteractors;
 @property AKEvent *updateAnalysis;
 @property AKSequence *analysisSequence;
 @property double baseInteractorSize;
+@property BOOL pinchActive;
+@property UIPinchGestureRecognizer *pinchGestureRecognizer;
+@property SoundInteractor *pinchingInteractor;
 
 @end

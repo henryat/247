@@ -21,13 +21,15 @@
         [player.audioAnalyzer play];
     }
     
-    _analysisSequence = [AKSequence sequence];
-    _updateAnalysis = [[AKEvent alloc] initWithBlock:^{
-        [self performSelectorOnMainThread:@selector(updateUI) withObject:self waitUntilDone:NO];
-        [_analysisSequence addEvent:_updateAnalysis afterDuration:0.01];
-    }];
-    [_analysisSequence addEvent:_updateAnalysis];
-    [_analysisSequence play];
+    [self startAnalysisSequence];
+    
+    _pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchInteractor:)];
+    _pinchGestureRecognizer.delegate = self;
+    [view addGestureRecognizer:_pinchGestureRecognizer];
+}
+
+-(void)willMoveFromView:(SKView *)view{
+    [view removeGestureRecognizer:_pinchGestureRecognizer];
 }
 
 // create audio looper and interaction object for each sound file
@@ -83,6 +85,17 @@
     }
 }
 
+-(void)startAnalysisSequence
+{
+    _analysisSequence = [AKSequence sequence];
+    _updateAnalysis = [[AKEvent alloc] initWithBlock:^{
+        [self performSelectorOnMainThread:@selector(updateUI) withObject:self waitUntilDone:NO];
+        [_analysisSequence addEvent:_updateAnalysis afterDuration:0.01];
+    }];
+    [_analysisSequence addEvent:_updateAnalysis];
+    [_analysisSequence play];
+}
+
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     /* Called when a touch begins */
     
@@ -95,8 +108,10 @@
             if (interactor.state == NO) {
                 SoundFilePlayer *player = interactor.player;
                 [player.amplitude setValue:player.playbackLevel];
-                interactor.fillColor = [SKColor greenColor];
                 interactor.state = YES;
+                interactor.lineWidth = .01;
+                interactor.blendMode = SKBlendModeAdd;
+                interactor.fillColor = [SKColor greenColor];
                 NSLog(@"analyzer audio level = %f", player.audioAnalyzer.trackedAmplitude.value);
             } else {
                 SoundFilePlayer *player = interactor.player;
@@ -105,6 +120,41 @@
                 interactor.fillColor = [SKColor darkGrayColor];
                 interactor.state = NO;
             }
+        }
+    }
+}
+
+- (void) pinchInteractor:(UIPinchGestureRecognizer *)recognizer {
+    self.pinchActive = YES;
+    
+    CGPoint pinchCenter = [recognizer locationInView:self.view];
+    
+    if(recognizer.state == UIGestureRecognizerStateBegan){
+//        UIView *marker = [[UIView alloc] initWithFrame:CGRectMake(pinchCenter.x, pinchCenter.y, 5, 5)];
+//        [marker setBackgroundColor:[UIColor redColor]];
+//        [self.view addSubview:marker];
+        CGPoint convertedPoint = [self.view convertPoint:pinchCenter toScene:self.scene];
+        [self setPinchedInteractor:convertedPoint];
+        if (_pinchingInteractor) {
+            _pinchingInteractor.fillColor = [SKColor blueColor];
+        }
+    } else if(recognizer.state == UIGestureRecognizerStateEnded || recognizer.state == UIGestureRecognizerStateCancelled) {
+        if(!_pinchingInteractor) return;
+        if(_pinchingInteractor.state == YES)
+            _pinchingInteractor.fillColor = [SKColor greenColor];
+        else
+            _pinchingInteractor.fillColor = [SKColor darkGrayColor];
+        _pinchingInteractor = nil;
+    }
+}
+
+- (void)setPinchedInteractor:(CGPoint)pinchPoint
+{
+    for(SoundInteractor *interactor in _soundInteractors){
+        if(pinchPoint.x > interactor.position.x - interactor.frame.size.width/2 && pinchPoint.x < interactor.position.x + interactor.frame.size.width/2 && pinchPoint.y > interactor.position.y - interactor.frame.size.height/2 && pinchPoint.y < interactor.position.y + interactor.frame.size.height/2){
+            NSLog(@"Pinch point(%f,%f)   interactorFrame:(%f,%f)(%f,%f)", pinchPoint.x, pinchPoint.y, interactor.position.x - interactor.frame.size.width/2, interactor.position.y - interactor.frame.size.height/2, interactor.position.x + interactor.frame.size.width/2, interactor.position.y + interactor.frame.size.height/2);
+            _pinchingInteractor = interactor;
+            break;
         }
     }
 }
