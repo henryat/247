@@ -35,10 +35,15 @@
         
         AKAudioOutput *audioOutput = [[AKAudioOutput alloc] initWithAudioSource:looper];
         [self connect:audioOutput];
-        self.outputStream = audioOutput;
+        // Output to global effects processing or analysis
+        AKMix *mono = [[AKMix alloc] initWithInput1:looper.leftOutput input2:looper.rightOutput balance:akp(0.5)];
+        [self connect:mono];
+        _outputStream = [AKAudio globalParameter];
+        [self assignOutput:_outputStream to:mono];
         
-        AKTrackedAmplitude *trackedAmplitude = [[AKTrackedAmplitude alloc] initWithAudioSource:looper];
-        self.trackedAmplitude = trackedAmplitude;
+        // THIS IS WHERE WE WOULD HOOK UP AUDIOANALYZER TO SOURCE
+        AKAudioAnalyzer *audioAnalyzer = [[AKAudioAnalyzer alloc] initWithAudioSource:_outputStream];
+        self.audioAnalyzer = audioAnalyzer;
     }
     
     return self;

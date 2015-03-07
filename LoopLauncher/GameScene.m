@@ -18,8 +18,18 @@
     [AKOrchestra start];
     for (SoundFilePlayer *player in _soundLoopers) {
         [player play];
+        [player.audioAnalyzer play];
     }
     
+    [self startAnalysisSequence];
+    
+    _pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchInteractor:)];
+    _pinchGestureRecognizer.delegate = self;
+    [view addGestureRecognizer:_pinchGestureRecognizer];
+}
+
+-(void)willMoveFromView:(SKView *)view{
+    [view removeGestureRecognizer:_pinchGestureRecognizer];
 }
 
 // create audio looper and interaction object for each sound file
@@ -30,12 +40,14 @@
     NSMutableArray *soundFiles = [[NSMutableArray alloc] initWithContentsOfFile:pathToPlist];
     
     _soundLoopers = [[NSMutableArray alloc] init];
+    _soundInteractors = [[NSMutableArray alloc] init];
     
     // create sound file player for each file
     for (NSArray *soundFile in soundFiles) {
         SoundFilePlayer *player = [[SoundFilePlayer alloc] initWithInfoArray:soundFile];
         [_soundLoopers addObject:player];
         [AKOrchestra addInstrument:player];
+        [AKOrchestra addInstrument:player.audioAnalyzer];
     }
     
     CGFloat windowWidth = [UIScreen mainScreen].bounds.size.width;
@@ -43,6 +55,8 @@
     
     CGFloat rectSize = (windowWidth * 0.75) / 4.0;
     CGFloat rectBufferSize = (windowWidth * 0.25) / 5.0;
+    
+    _baseInteractorSize = rectSize * .7;
     
     int arrayIndex = 0;
     for (int i = 0; i < 4; i++) {
@@ -52,25 +66,47 @@
             
             CGFloat x = j * rectSize + (j + 1) * rectBufferSize;
             CGFloat y = windowHeight - (i + 1) * rectSize - (i + 1) * rectBufferSize - 100;
-//            CGRect rect = CGRectMake(x, y, rectSize, rectSize);
             
-            SoundInteractor *interactor = [SoundInteractor shapeNodeWithCircleOfRadius:rectSize/2];
+            SoundInteractor *interactor = [SoundInteractor shapeNodeWithCircleOfRadius:_baseInteractorSize/2];
             interactor.position = CGPointMake(x + rectSize/2, y);
             interactor.strokeColor = [SKColor grayColor];
             interactor.fillColor = [SKColor darkGrayColor];
             interactor.alpha = .4;
             interactor.lineWidth = 3;
-            interactor.xScale = .6;
-            interactor.yScale = .6;
             
             [self addChild:interactor];
+            
+//            [interactor setPhysicsBody:[SKPhysicsBody bodyWithCircleOfRadius:_baseInteractorSize/2 center:interactor.position]];
+//            interactor.physicsBody.affectedByGravity = NO;
+//            interactor.physicsBody.dynamic = YES;
+//            interactor.physicsBody.restitution = 0.7;
+//            interactor.physicsBody.friction = 0;
+           // interactor.physicsBody.velocity = CGVectorMake((CGFloat) random()/(CGFloat) RAND_MAX * 100, (CGFloat) random()/(CGFloat) RAND_MAX * 100);
             
             SoundFilePlayer *player = [_soundLoopers objectAtIndex:arrayIndex];
             interactor.player = player;
             interactor.state = NO;
             arrayIndex++;
+            [_soundInteractors addObject:interactor];
         }
     }
+    
+    SKPhysicsBody* borderBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:self.frame];
+    // 2 Set physicsBody of scene to borderBody
+    self.physicsBody = borderBody;
+    // 3 Set the friction of that physicsBody to 0
+    self.physicsBody.friction = 0.0f;
+}
+
+-(void)startAnalysisSequence
+{
+    _analysisSequence = [AKSequence sequence];
+    _updateAnalysis = [[AKEvent alloc] initWithBlock:^{
+        [self performSelectorOnMainThread:@selector(updateUI) withObject:self waitUntilDone:NO];
+        [_analysisSequence addEvent:_updateAnalysis afterDuration:0.01];
+    }];
+    [_analysisSequence addEvent:_updateAnalysis];
+    [_analysisSequence play];
 }
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -85,18 +121,71 @@
             if (interactor.state == NO) {
                 SoundFilePlayer *player = interactor.player;
                 [player.amplitude setValue:player.playbackLevel];
-                interactor.fillColor = [SKColor greenColor];
                 interactor.state = YES;
-                NSLog(@"analyzer audio level = %f", player.trackedAmplitude.value);
+                interactor.lineWidth = .01;
+                interactor.blendMode = SKBlendModeAdd;
+                interactor.fillColor = [SKColor greenColor];
+                NSLog(@"analyzer audio level = %f", player.audioAnalyzer.trackedAmplitude.value);
             } else {
                 SoundFilePlayer *player = interactor.player;
-                NSLog(@"analyzer audio level = %f", player.trackedAmplitude.value);
+                NSLog(@"analyzer audio level = %f", player.audioAnalyzer.trackedAmplitude.value);
                 [player.amplitude setValue:0.0];
                 interactor.fillColor = [SKColor darkGrayColor];
                 interactor.state = NO;
             }
         }
     }
+}
+
+- (void) pinchInteractor:(UIPinchGestureRecognizer *)recognizer {
+    self.pinchActive = YES;
+    
+    CGPoint pinchCenter = [recognizer locationInView:self.view];
+    
+    if(recognizer.state == UIGestureRecognizerStateBegan){
+//        UIView *marker = [[UIView alloc] initWithFrame:CGRectMake(pinchCenter.x, pinchCenter.y, 5, 5)];
+//        [marker setBackgroundColor:[UIColor redColor]];
+//        [self.view addSubview:marker];
+        CGPoint convertedPoint = [self.view convertPoint:pinchCenter toScene:self.scene];
+        [self setPinchedInteractor:convertedPoint];
+        if (_pinchingInteractor) {
+            _pinchingInteractor.fillColor = [SKColor blueColor];
+        }
+    } else if(recognizer.state == UIGestureRecognizerStateEnded || recognizer.state == UIGestureRecognizerStateCancelled) {
+        if(!_pinchingInteractor) return;
+        if(_pinchingInteractor.state == YES)
+            _pinchingInteractor.fillColor = [SKColor greenColor];
+        else
+            _pinchingInteractor.fillColor = [SKColor darkGrayColor];
+        _pinchingInteractor = nil;
+    }
+}
+
+- (void)setPinchedInteractor:(CGPoint)pinchPoint
+{
+    for(SoundInteractor *interactor in _soundInteractors){
+        if(pinchPoint.x > interactor.position.x - interactor.frame.size.width/2 && pinchPoint.x < interactor.position.x + interactor.frame.size.width/2 && pinchPoint.y > interactor.position.y - interactor.frame.size.height/2 && pinchPoint.y < interactor.position.y + interactor.frame.size.height/2){
+            NSLog(@"Pinch point(%f,%f)   interactorFrame:(%f,%f)(%f,%f)", pinchPoint.x, pinchPoint.y, interactor.position.x - interactor.frame.size.width/2, interactor.position.y - interactor.frame.size.height/2, interactor.position.x + interactor.frame.size.width/2, interactor.position.y + interactor.frame.size.height/2);
+            _pinchingInteractor = interactor;
+            break;
+        }
+    }
+}
+
+- (void)updateUI {
+    
+    for (SoundInteractor *interactor in _soundInteractors) {
+        double soundAmplitude = interactor.player.audioAnalyzer.trackedAmplitude.value;
+        if(soundAmplitude >= .01){
+            double scaleFactor = 1 + (soundAmplitude * 5);
+            interactor.xScale = scaleFactor;
+            interactor.yScale = scaleFactor;
+        } else {
+            interactor.xScale = 1;
+            interactor.yScale = 1;
+        }
+    }
+    
 }
 
 -(void)update:(CFTimeInterval)currentTime {
