@@ -76,12 +76,13 @@
             
             [self addChild:interactor];
             
-//            [interactor setPhysicsBody:[SKPhysicsBody bodyWithCircleOfRadius:_baseInteractorSize/2 center:interactor.position]];
-//            interactor.physicsBody.affectedByGravity = NO;
-//            interactor.physicsBody.dynamic = YES;
-//            interactor.physicsBody.restitution = 0.7;
-//            interactor.physicsBody.friction = 0;
-           // interactor.physicsBody.velocity = CGVectorMake((CGFloat) random()/(CGFloat) RAND_MAX * 100, (CGFloat) random()/(CGFloat) RAND_MAX * 100);
+            [interactor setPhysicsBody:[SKPhysicsBody bodyWithCircleOfRadius:interactor.frame.size.width/2]];
+            interactor.physicsBody.affectedByGravity = NO;
+            interactor.physicsBody.dynamic = YES;
+            interactor.physicsBody.restitution = 1.0;
+            interactor.physicsBody.friction = 0;
+            interactor.physicsBody.linearDamping = 0;
+            [interactor.physicsBody applyImpulse:CGVectorMake((CGFloat) random()/(CGFloat) RAND_MAX * 50, (CGFloat) random()/(CGFloat) RAND_MAX * 50)];
             
             SoundFilePlayer *player = [_soundLoopers objectAtIndex:arrayIndex];
             interactor.player = player;
@@ -96,6 +97,9 @@
     self.physicsBody = borderBody;
     // 3 Set the friction of that physicsBody to 0
     self.physicsBody.friction = 0.0f;
+    self.physicsBody.restitution = 1.0;
+    self.physicsBody.linearDamping = 0;
+    self.physicsBody.dynamic = YES;
 }
 
 -(void)startAnalysisSequence
