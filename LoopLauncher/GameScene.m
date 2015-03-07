@@ -76,6 +76,13 @@
             
             [self addChild:interactor];
             
+//            [interactor setPhysicsBody:[SKPhysicsBody bodyWithCircleOfRadius:_baseInteractorSize/2 center:interactor.position]];
+//            interactor.physicsBody.affectedByGravity = NO;
+//            interactor.physicsBody.dynamic = YES;
+//            interactor.physicsBody.restitution = 0.7;
+//            interactor.physicsBody.friction = 0;
+           // interactor.physicsBody.velocity = CGVectorMake((CGFloat) random()/(CGFloat) RAND_MAX * 100, (CGFloat) random()/(CGFloat) RAND_MAX * 100);
+            
             SoundFilePlayer *player = [_soundLoopers objectAtIndex:arrayIndex];
             interactor.player = player;
             interactor.state = NO;
@@ -83,6 +90,12 @@
             [_soundInteractors addObject:interactor];
         }
     }
+    
+    SKPhysicsBody* borderBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:self.frame];
+    // 2 Set physicsBody of scene to borderBody
+    self.physicsBody = borderBody;
+    // 3 Set the friction of that physicsBody to 0
+    self.physicsBody.friction = 0.0f;
 }
 
 -(void)startAnalysisSequence
