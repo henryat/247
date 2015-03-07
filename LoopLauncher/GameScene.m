@@ -12,8 +12,14 @@
 
 -(void)didMoveToView:(SKView *)view {
     /* Setup your scene here */
+    self.backgroundColor = [SKColor orangeColor];
+    self.scaleMode = SKSceneScaleModeAspectFit;
+    self.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:self.frame];
+    self.physicsBody.categoryBitMask = edgeCategory;
+    self.physicsWorld.contactDelegate = self;
     
-    // create all the loopers
+    
+//    // create all the loopers
     [self addSoundLoopers];
     [AKOrchestra start];
     for (SoundFilePlayer *player in _soundLoopers) {
@@ -23,13 +29,13 @@
     
     [self startAnalysisSequence];
     
-    _pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchInteractor:)];
-    _pinchGestureRecognizer.delegate = self;
-    [view addGestureRecognizer:_pinchGestureRecognizer];
+//    _pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchInteractor:)];
+//    _pinchGestureRecognizer.delegate = self;
+//    [view addGestureRecognizer:_pinchGestureRecognizer];
 }
 
 -(void)willMoveFromView:(SKView *)view{
-    [view removeGestureRecognizer:_pinchGestureRecognizer];
+//    [view removeGestureRecognizer:_pinchGestureRecognizer];
 }
 
 // create audio looper and interaction object for each sound file
@@ -59,9 +65,9 @@
     _baseInteractorSize = rectSize * .7;
     
     int arrayIndex = 0;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 2; i++) {
         if (arrayIndex >= [_soundLoopers count]) { break; }
-        for (int j = 0; j < 4; j++) {
+        for (int j = 0; j < 2; j++) {
             if (arrayIndex >= [_soundLoopers count]) { break; }
             
             CGFloat x = j * rectSize + (j + 1) * rectBufferSize;
@@ -73,6 +79,7 @@
             interactor.fillColor = [SKColor darkGrayColor];
             interactor.alpha = .4;
             interactor.lineWidth = 3;
+            interactor.blendMode = SKBlendModeAdd;
             
             [self addChild:interactor];
             
@@ -80,10 +87,15 @@
             interactor.physicsBody.affectedByGravity = NO;
             interactor.physicsBody.dynamic = YES;
             interactor.physicsBody.restitution = 1.0;
-            interactor.physicsBody.friction = 0;
-            interactor.physicsBody.linearDamping = 0;
-            [interactor.physicsBody applyImpulse:CGVectorMake((CGFloat) random()/(CGFloat) RAND_MAX * 50, (CGFloat) random()/(CGFloat) RAND_MAX * 50)];
+            interactor.physicsBody.friction = 0.0f;
+            interactor.physicsBody.linearDamping = 0.0f;
+            interactor.physicsBody.angularDamping = 0.0f;
+            interactor.physicsBody.allowsRotation = NO;
             
+            interactor.physicsBody.categoryBitMask = ballCategory;
+            interactor.physicsBody.collisionBitMask = ballCategory | edgeCategory;
+            interactor.physicsBody.contactTestBitMask = edgeCategory | ballCategory;
+            [interactor.physicsBody applyImpulse:CGVectorMake((CGFloat) random()/(CGFloat) RAND_MAX * 5, (CGFloat) random()/(CGFloat) RAND_MAX * 5)];
             SoundFilePlayer *player = [_soundLoopers objectAtIndex:arrayIndex];
             interactor.player = player;
             interactor.state = NO;
@@ -91,15 +103,45 @@
             [_soundInteractors addObject:interactor];
         }
     }
+}
+
+- (void)didBeginContact:(SKPhysicsContact *)contact
+{
+    // THIS IS NECESSARY TO DEAL WITH LAME BUG IN APPLE CODE THAT IGNORES IMPULSES LESS THAN 20 OR SOME BS LIKE THAT
+    SKPhysicsBody *bodyA = contact.bodyA;
+    SKPhysicsBody *bodyB = contact.bodyB;
+    CGVector contactNormal = contact.contactNormal;
+    CGFloat contactImpulse = contact.collisionImpulse;
     
-    SKPhysicsBody* borderBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:self.frame];
-    // 2 Set physicsBody of scene to borderBody
-    self.physicsBody = borderBody;
-    // 3 Set the friction of that physicsBody to 0
-    self.physicsBody.friction = 0.0f;
-    self.physicsBody.restitution = 1.0;
-    self.physicsBody.linearDamping = 0;
-    self.physicsBody.dynamic = YES;
+    if((bodyA.categoryBitMask == edgeCategory && bodyB.categoryBitMask == ballCategory)){
+        if(contactImpulse < 15 && contactImpulse > 0){
+            if(contactNormal.dx == -1 && contactNormal.dy == 0){ // right wall
+//                NSLog(@"rightWall");
+
+                [bodyB applyImpulse:CGVectorMake(-contactImpulse, 0)];
+                if(abs(bodyB.velocity.dx) + abs(bodyB.velocity.dy) < 25){
+                    bodyB.velocity = CGVectorMake(bodyB.velocity.dx * 1.5, bodyB.velocity.dy * 1.5);
+                }
+                if(abs(bodyB.velocity.dx) + abs(bodyB.velocity.dy) < 15){
+                    bodyB.velocity = CGVectorMake(bodyB.velocity.dx * 3, bodyB.velocity.dy * 3);
+                }
+            } else if(contactNormal.dx == 1 && contactNormal.dy == 0){ // left wall
+//                NSLog(@"leftWall");
+                [bodyB applyImpulse:CGVectorMake(contactImpulse, 0)];
+            } else if(contactNormal.dx == 0 && contactNormal.dy == -1){ // top wall
+                [bodyB applyImpulse:CGVectorMake(0, -contactImpulse)];
+//                NSLog(@"topWall");
+            } else if(contactNormal.dx == 0 && contactNormal.dy == 1){ // bottom wall
+//                NSLog(@"bottomWall");
+                [bodyB applyImpulse:CGVectorMake(0, contactImpulse)];
+            }
+        }
+    } else if((bodyA.categoryBitMask == ballCategory && bodyB.categoryBitMask == ballCategory)){
+        if(contactImpulse < 15){
+            bodyB.velocity = CGVectorMake(bodyB.velocity.dx * 1.05, bodyB.velocity.dy * 1.05);
+            bodyA.velocity = CGVectorMake(bodyA.velocity.dx * 1.05, bodyA.velocity.dy * 1.05);
+        }
+    }
 }
 
 -(void)startAnalysisSequence
@@ -126,13 +168,11 @@
                 SoundFilePlayer *player = interactor.player;
                 [player.amplitude setValue:player.playbackLevel];
                 interactor.state = YES;
-                interactor.lineWidth = .01;
-                interactor.blendMode = SKBlendModeAdd;
                 interactor.fillColor = [SKColor greenColor];
-                NSLog(@"analyzer audio level = %f", player.audioAnalyzer.trackedAmplitude.value);
+//                NSLog(@"analyzer audio level = %f", player.audioAnalyzer.trackedAmplitude.value);
             } else {
                 SoundFilePlayer *player = interactor.player;
-                NSLog(@"analyzer audio level = %f", player.audioAnalyzer.trackedAmplitude.value);
+//                NSLog(@"analyzer audio level = %f", player.audioAnalyzer.trackedAmplitude.value);
                 [player.amplitude setValue:0.0];
                 interactor.fillColor = [SKColor darkGrayColor];
                 interactor.state = NO;
@@ -141,40 +181,40 @@
     }
 }
 
-- (void) pinchInteractor:(UIPinchGestureRecognizer *)recognizer {
-    self.pinchActive = YES;
-    
-    CGPoint pinchCenter = [recognizer locationInView:self.view];
-    
-    if(recognizer.state == UIGestureRecognizerStateBegan){
-//        UIView *marker = [[UIView alloc] initWithFrame:CGRectMake(pinchCenter.x, pinchCenter.y, 5, 5)];
-//        [marker setBackgroundColor:[UIColor redColor]];
-//        [self.view addSubview:marker];
-        CGPoint convertedPoint = [self.view convertPoint:pinchCenter toScene:self.scene];
-        [self setPinchedInteractor:convertedPoint];
-        if (_pinchingInteractor) {
-            _pinchingInteractor.fillColor = [SKColor blueColor];
-        }
-    } else if(recognizer.state == UIGestureRecognizerStateEnded || recognizer.state == UIGestureRecognizerStateCancelled) {
-        if(!_pinchingInteractor) return;
-        if(_pinchingInteractor.state == YES)
-            _pinchingInteractor.fillColor = [SKColor greenColor];
-        else
-            _pinchingInteractor.fillColor = [SKColor darkGrayColor];
-        _pinchingInteractor = nil;
-    }
-}
-
-- (void)setPinchedInteractor:(CGPoint)pinchPoint
-{
-    for(SoundInteractor *interactor in _soundInteractors){
-        if(pinchPoint.x > interactor.position.x - interactor.frame.size.width/2 && pinchPoint.x < interactor.position.x + interactor.frame.size.width/2 && pinchPoint.y > interactor.position.y - interactor.frame.size.height/2 && pinchPoint.y < interactor.position.y + interactor.frame.size.height/2){
-            NSLog(@"Pinch point(%f,%f)   interactorFrame:(%f,%f)(%f,%f)", pinchPoint.x, pinchPoint.y, interactor.position.x - interactor.frame.size.width/2, interactor.position.y - interactor.frame.size.height/2, interactor.position.x + interactor.frame.size.width/2, interactor.position.y + interactor.frame.size.height/2);
-            _pinchingInteractor = interactor;
-            break;
-        }
-    }
-}
+//- (void) pinchInteractor:(UIPinchGestureRecognizer *)recognizer {
+//    self.pinchActive = YES;
+//    
+//    CGPoint pinchCenter = [recognizer locationInView:self.view];
+//    
+//    if(recognizer.state == UIGestureRecognizerStateBegan){
+////        UIView *marker = [[UIView alloc] initWithFrame:CGRectMake(pinchCenter.x, pinchCenter.y, 5, 5)];
+////        [marker setBackgroundColor:[UIColor redColor]];
+////        [self.view addSubview:marker];
+//        CGPoint convertedPoint = [self.view convertPoint:pinchCenter toScene:self.scene];
+//        [self setPinchedInteractor:convertedPoint];
+//        if (_pinchingInteractor) {
+//            _pinchingInteractor.fillColor = [SKColor blueColor];
+//        }
+//    } else if(recognizer.state == UIGestureRecognizerStateEnded || recognizer.state == UIGestureRecognizerStateCancelled) {
+//        if(!_pinchingInteractor) return;
+//        if(_pinchingInteractor.state == YES)
+//            _pinchingInteractor.fillColor = [SKColor greenColor];
+//        else
+//            _pinchingInteractor.fillColor = [SKColor darkGrayColor];
+//        _pinchingInteractor = nil;
+//    }
+//}
+//
+//- (void)setPinchedInteractor:(CGPoint)pinchPoint
+//{
+//    for(SoundInteractor *interactor in _soundInteractors){
+//        if(pinchPoint.x > interactor.position.x - interactor.frame.size.width/2 && pinchPoint.x < interactor.position.x + interactor.frame.size.width/2 && pinchPoint.y > interactor.position.y - interactor.frame.size.height/2 && pinchPoint.y < interactor.position.y + interactor.frame.size.height/2){
+//            NSLog(@"Pinch point(%f,%f)   interactorFrame:(%f,%f)(%f,%f)", pinchPoint.x, pinchPoint.y, interactor.position.x - interactor.frame.size.width/2, interactor.position.y - interactor.frame.size.height/2, interactor.position.x + interactor.frame.size.width/2, interactor.position.y + interactor.frame.size.height/2);
+//            _pinchingInteractor = interactor;
+//            break;
+//        }
+//    }
+//}
 
 - (void)updateUI {
     
