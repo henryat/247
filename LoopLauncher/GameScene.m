@@ -19,7 +19,7 @@
     self.physicsWorld.contactDelegate = self;
     
     
-//    // create all the loopers
+    // create all the loopers
     [self addSoundLoopers];
     [AKOrchestra start];
     for (SoundFilePlayer *player in _soundLoopers) {
@@ -27,7 +27,7 @@
         [player.audioAnalyzer play];
     }
     
-    [self startAnalysisSequence];
+//    [self startAnalysisSequence];
     
 //    _pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchInteractor:)];
 //    _pinchGestureRecognizer.delegate = self;
@@ -65,9 +65,9 @@
     _baseInteractorSize = rectSize * .7;
     
     int arrayIndex = 0;
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 4; i++) {
         if (arrayIndex >= [_soundLoopers count]) { break; }
-        for (int j = 0; j < 2; j++) {
+        for (int j = 0; j < 4; j++) {
             if (arrayIndex >= [_soundLoopers count]) { break; }
             
             CGFloat x = j * rectSize + (j + 1) * rectBufferSize;
@@ -75,11 +75,6 @@
             
             SoundInteractor *interactor = [SoundInteractor shapeNodeWithCircleOfRadius:_baseInteractorSize/2];
             interactor.position = CGPointMake(x + rectSize/2, y);
-            interactor.strokeColor = [SKColor grayColor];
-            interactor.fillColor = [SKColor darkGrayColor];
-            interactor.alpha = .4;
-            interactor.lineWidth = 3;
-            interactor.blendMode = SKBlendModeAdd;
             
             [self addChild:interactor];
             
@@ -98,7 +93,6 @@
             [interactor.physicsBody applyImpulse:CGVectorMake((CGFloat) random()/(CGFloat) RAND_MAX * 5, (CGFloat) random()/(CGFloat) RAND_MAX * 5)];
             SoundFilePlayer *player = [_soundLoopers objectAtIndex:arrayIndex];
             interactor.player = player;
-            interactor.state = NO;
             arrayIndex++;
             [_soundInteractors addObject:interactor];
         }
@@ -144,16 +138,24 @@
     }
 }
 
--(void)startAnalysisSequence
-{
-    _analysisSequence = [AKSequence sequence];
-    _updateAnalysis = [[AKEvent alloc] initWithBlock:^{
-        [self performSelectorOnMainThread:@selector(updateUI) withObject:self waitUntilDone:NO];
-        [_analysisSequence addEvent:_updateAnalysis afterDuration:0.01];
-    }];
-    [_analysisSequence addEvent:_updateAnalysis];
-    [_analysisSequence play];
-}
+//-(void)startAnalysisSequence
+//{
+//    _analysisSequence = [AKSequence sequence];
+//    _updateAnalysis = [[AKEvent alloc] initWithBlock:^{
+//        [self performSelectorOnMainThread:@selector(updateUI) withObject:self waitUntilDone:NO];
+//        [_analysisSequence addEvent:_updateAnalysis afterDuration:0.05];
+//    }];
+//    [_analysisSequence addEvent:_updateAnalysis];
+//    
+//    _averagedAmplitudes = [[NSMutableArray alloc] init];
+//    _smoothedAmplitudes = [[NSMutableArray alloc] init];
+//    for (int i = 0; i < _soundLoopers.count; i++) {
+//        [_averagedAmplitudes addObject:[NSNumber numberWithDouble:0.0]];
+//        [_averagedAmplitudes addObject:[NSNumber numberWithDouble:0.0]];
+//    }
+//    
+//    [_analysisSequence play];
+//}
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     /* Called when a touch begins */
@@ -165,17 +167,9 @@
         if (touchedNode != self) {
             SoundInteractor *interactor = (SoundInteractor *)touchedNode;
             if (interactor.state == NO) {
-                SoundFilePlayer *player = interactor.player;
-                [player.amplitude setValue:player.playbackLevel];
-                interactor.state = YES;
-                interactor.fillColor = [SKColor greenColor];
-//                NSLog(@"analyzer audio level = %f", player.audioAnalyzer.trackedAmplitude.value);
+                [interactor turnOn];
             } else {
-                SoundFilePlayer *player = interactor.player;
-//                NSLog(@"analyzer audio level = %f", player.audioAnalyzer.trackedAmplitude.value);
-                [player.amplitude setValue:0.0];
-                interactor.fillColor = [SKColor darkGrayColor];
-                interactor.state = NO;
+                [interactor turnOff];
             }
         }
     }
@@ -216,24 +210,23 @@
 //    }
 //}
 
-- (void)updateUI {
-    
-    for (SoundInteractor *interactor in _soundInteractors) {
-        double soundAmplitude = interactor.player.audioAnalyzer.trackedAmplitude.value;
-        if(soundAmplitude >= .01){
-            double scaleFactor = 1 + (soundAmplitude * 5);
-            interactor.xScale = scaleFactor;
-            interactor.yScale = scaleFactor;
-        } else {
-            interactor.xScale = 1;
-            interactor.yScale = 1;
-        }
-    }
-    
-}
+//- (void)updateUI {
+//    for (SoundInteractor *interactor in _soundInteractors) {
+//        double val = 0.87;
+//        double soundAmplitude = interactor.player.audioAnalyzer.trackedAmplitude.value;
+//        interactor.averagedAmplitude = val * interactor.averagedAmplitude + (1 - val) * soundAmplitude;
+//        double scaleFactor = 1 + (interactor.averagedAmplitude * 5);
+//        interactor.xScale = scaleFactor;
+//        interactor.yScale = scaleFactor;
+//    }
+//}
 
 -(void)update:(CFTimeInterval)currentTime {
     /* Called before each frame is rendered */
+    
+    for (SoundInteractor *interactor in _soundInteractors) {
+        [interactor updateAppearance];
+    }
 }
 
 @end
