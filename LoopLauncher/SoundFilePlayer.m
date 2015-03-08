@@ -27,11 +27,12 @@
         [self addFunctionTable:soundFile];
         
         AKStereoSoundFileLooper *looper = [[AKStereoSoundFileLooper alloc] initWithSoundFile:soundFile];
-        _amplitude = [[AKInstrumentProperty alloc] initWithValue:0.0 minimum:0.0 maximum:0.2];
+        float maximumAmplitude = ((NSNumber *) info[1]).floatValue;
+        _amplitude = [[AKInstrumentProperty alloc] initWithValue:0.0 minimum:0.0 maximum:maximumAmplitude];
         [self addProperty:_amplitude];
         looper.amplitude = _amplitude;
         [self connect:looper];
-        self.playbackLevel = ((NSNumber *) info[1]).doubleValue;
+//        self.playbackLevel = ((NSNumber *) info[1]).doubleValue;
         
         AKAudioOutput *audioOutput = [[AKAudioOutput alloc] initWithAudioSource:looper];
         [self connect:audioOutput];
