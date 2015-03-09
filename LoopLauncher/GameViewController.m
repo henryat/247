@@ -85,7 +85,7 @@
     CGFloat windowWidth = [UIScreen mainScreen].bounds.size.width;
     CGFloat windowHeight = [UIScreen mainScreen].bounds.size.height;
     UILabel *titleLabel = [[UILabel alloc] init];
-    titleLabel.text = @"Audio Auscape";
+    titleLabel.text = @"Pulse";
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.font = [UIFont fontWithName:@"Trebuchet MS" size:30];
     titleLabel.textColor = [UIColor darkGrayColor];
