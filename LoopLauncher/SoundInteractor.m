@@ -42,9 +42,9 @@
 }
 
 - (void)updateAppearance {
-    double val = 0.84;
+    double bias = 0.84;
     double soundAmplitude = _player.audioAnalyzer.trackedAmplitude.value;
-    _averagedAmplitude = val * _averagedAmplitude + (1 - val) * soundAmplitude;
+    _averagedAmplitude = bias * _averagedAmplitude + (1 - bias) * soundAmplitude;
     double scaleFactor = 1 + (_averagedAmplitude * 5);
     self.xScale = scaleFactor;
     self.yScale = scaleFactor;
