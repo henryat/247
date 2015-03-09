@@ -31,9 +31,7 @@
     _averagedAmplitude = 0.0;
     
     float volumeStepSize = _player.amplitude.maximum / 100.0;
-    
-    NSLog(@"max: %f, step: %f", _player.amplitude.maximum, volumeStepSize);
-    
+        
     _volumeUpSequence = [AKSequence sequence];
     _volumeUpEvent = [[AKEvent alloc] initWithBlock:^{
         if (_player.amplitude.value < _player.amplitude.maximum) {

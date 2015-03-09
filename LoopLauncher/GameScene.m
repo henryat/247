@@ -141,6 +141,8 @@
     
     [impulseButton addChild:label];
     
+    impulseButton.alpha = 0.5;
+    
     [self addChild:impulseButton];
     
 }
@@ -161,6 +163,8 @@
     
     [resetButton addChild:label];
     
+    resetButton.alpha = 0.5;
+    
     [self addChild:resetButton];
     
 }
@@ -180,6 +184,8 @@
     label.position = CGPointMake(0,-5);
     
     [homeButton addChild:label];
+    
+    homeButton.alpha = 0.5;
     
     [self addChild:homeButton];
     
