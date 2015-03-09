@@ -14,36 +14,47 @@
     self = [super init];
     
     if (self) {
-        _state = NO;
-        _averagedAmplitude = 0.0;
-        
-        _volumeUpSequence = [AKSequence sequence];
-        _volumeUpEvent = [[AKEvent alloc] initWithBlock:^{
-            if (_player.amplitude.value < _player.amplitude.maximum) {
-                _player.amplitude.value += 0.005;
-                [_volumeUpSequence addEvent:_volumeUpEvent afterDuration:0.01];
-            }
-        }];
-        [_volumeUpSequence addEvent:_volumeUpEvent];
-        
-        _volumeDownSequence = [AKSequence sequence];
-        _volumeDownEvent = [[AKEvent alloc] initWithBlock:^{
-            if (_player.amplitude.value > _player.amplitude.minimum) {
-                _player.amplitude.value -= 0.005;
-                [_volumeDownSequence addEvent:_volumeDownEvent afterDuration:0.01];
-            }
-        }];
-        [_volumeDownSequence addEvent:_volumeDownEvent];
-        
         self.strokeColor = [SKColor grayColor];
         self.fillColor = [SKColor darkGrayColor];
         self.alpha = .4;
         self.lineWidth = 3;
         self.blendMode = SKBlendModeAdd;
         self.glowWidth = 5;
-}
+    }
     
     return self;
+}
+
+- (void)setPlayer:(SoundFilePlayer *)player {
+    _player = player;
+    _state = NO;
+    _averagedAmplitude = 0.0;
+    
+    float volumeStepSize = _player.amplitude.maximum / 100.0;
+    
+    NSLog(@"max: %f, step: %f", _player.amplitude.maximum, volumeStepSize);
+    
+    _volumeUpSequence = [AKSequence sequence];
+    _volumeUpEvent = [[AKEvent alloc] initWithBlock:^{
+        if (_player.amplitude.value < _player.amplitude.maximum) {
+            _player.amplitude.value += volumeStepSize;
+            if (_player.amplitude.value > _player.amplitude.maximum)
+                _player.amplitude.value = _player.amplitude.maximum;
+            [_volumeUpSequence addEvent:_volumeUpEvent afterDuration:0.01];
+        }
+    }];
+    [_volumeUpSequence addEvent:_volumeUpEvent];
+    
+    _volumeDownSequence = [AKSequence sequence];
+    _volumeDownEvent = [[AKEvent alloc] initWithBlock:^{
+        if (_player.amplitude.value > _player.amplitude.minimum) {
+            _player.amplitude.value -= volumeStepSize;
+            if (_player.amplitude.value < _player.amplitude.minimum)
+                _player.amplitude.value = _player.amplitude.minimum;
+            [_volumeDownSequence addEvent:_volumeDownEvent afterDuration:0.01];
+        }
+    }];
+    [_volumeDownSequence addEvent:_volumeDownEvent];
 }
 
 - (void)turnOn {

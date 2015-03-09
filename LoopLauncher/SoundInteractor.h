@@ -11,6 +11,7 @@
 
 @interface SoundInteractor : SKShapeNode
 
+- (void)setPlayer:(SoundFilePlayer *)player;
 - (void)turnOn;
 - (void)turnOff;
 - (void)updateAppearance;

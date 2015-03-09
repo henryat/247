@@ -35,36 +35,37 @@
         if (arrayIndex >= [_soundLoopers count]) { break; }
     
             
-            CGFloat x = _loopCounter * rectSize + (_loopCounter + 1) * rectBufferSize;
-            CGFloat y = windowHeight - (i + 1) * rectSize - (i + 1) * rectBufferSize - 100;
-            
-            SoundInteractor *interactor = [SoundInteractor shapeNodeWithCircleOfRadius:_baseInteractorSize/2];
-            interactor.position = CGPointMake(x + rectSize/2, y);
-            
+        CGFloat x = _loopCounter * rectSize + (_loopCounter + 1) * rectBufferSize;
+        CGFloat y = windowHeight - (i + 1) * rectSize - (i + 1) * rectBufferSize - 100;
         
-             [self addChild:interactor];
+        SoundInteractor *interactor = [SoundInteractor shapeNodeWithCircleOfRadius:_baseInteractorSize/2];
+        interactor.position = CGPointMake(x + rectSize/2, y);
+    
+        SoundFilePlayer *player = [_soundLoopers objectAtIndex:arrayIndex];
+        [interactor setPlayer:player];
+        arrayIndex++;
         
-            
-            [interactor setPhysicsBody:[SKPhysicsBody bodyWithCircleOfRadius:interactor.frame.size.width/2]];
-            interactor.physicsBody.affectedByGravity = NO;
-            interactor.physicsBody.dynamic = YES;
-            interactor.physicsBody.restitution = 1.0;
-            interactor.physicsBody.friction = 0.0f;
-            interactor.physicsBody.linearDamping = 0.0f;
-            interactor.physicsBody.angularDamping = 0.0f;
-            interactor.physicsBody.allowsRotation = NO;
-            
-            interactor.physicsBody.categoryBitMask = ballCategory;
-            interactor.physicsBody.collisionBitMask = ballCategory | edgeCategory;
-            interactor.physicsBody.contactTestBitMask = edgeCategory | ballCategory;
-            CGVector impulseVec = CGVectorMake((CGFloat) random()/(CGFloat) RAND_MAX * 5, (CGFloat) random()/(CGFloat) RAND_MAX * 5);
-            if(rand() > RAND_MAX/2) impulseVec.dx = -impulseVec.dx;
-            if(rand() > RAND_MAX/2) impulseVec.dy = -impulseVec.dy;
-            [interactor.physicsBody applyImpulse:impulseVec];
-            SoundFilePlayer *player = [_soundLoopers objectAtIndex:arrayIndex];
-            interactor.player = player;
-            arrayIndex++;
-            [_soundInteractors addObject:interactor];
+        [_soundInteractors addObject:interactor];
+        [self addChild:interactor];
+    
+        
+        [interactor setPhysicsBody:[SKPhysicsBody bodyWithCircleOfRadius:interactor.frame.size.width/2]];
+        interactor.physicsBody.affectedByGravity = NO;
+        interactor.physicsBody.dynamic = YES;
+        interactor.physicsBody.restitution = 1.0;
+        interactor.physicsBody.friction = 0.0f;
+        interactor.physicsBody.linearDamping = 0.0f;
+        interactor.physicsBody.angularDamping = 0.0f;
+        interactor.physicsBody.allowsRotation = NO;
+        
+        interactor.physicsBody.categoryBitMask = ballCategory;
+        interactor.physicsBody.collisionBitMask = ballCategory | edgeCategory;
+        interactor.physicsBody.contactTestBitMask = edgeCategory | ballCategory;
+        CGVector impulseVec = CGVectorMake((CGFloat) random()/(CGFloat) RAND_MAX * 5, (CGFloat) random()/(CGFloat) RAND_MAX * 5);
+        if(rand() > RAND_MAX/2) impulseVec.dx = -impulseVec.dx;
+        if(rand() > RAND_MAX/2) impulseVec.dy = -impulseVec.dy;
+        [interactor.physicsBody applyImpulse:impulseVec];
+        
     if (_loopCounter > _soundInteractors.count - 1) {
         [_timer invalidate];
         return;
