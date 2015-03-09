@@ -11,4 +11,7 @@
 
 @interface GameViewController : UIViewController
 
+@property UILabel *goalNumberLabel;
+@property UIStepper *goalCounter;
+
 @end
