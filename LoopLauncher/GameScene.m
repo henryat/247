@@ -94,7 +94,7 @@
     [self addImpulseButton];
     [self addHomeButton];
     [self addResetButton];
-    _timer = [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(introduceLoops) userInfo:nil repeats:YES];
+    _timer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(introduceLoops) userInfo:nil repeats:YES];
     [_timer fire];
     [AKOrchestra start];
     for (SoundFilePlayer *player in _soundLoopers) {
