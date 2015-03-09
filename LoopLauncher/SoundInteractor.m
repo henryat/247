@@ -36,7 +36,7 @@
         [_volumeDownSequence addEvent:_volumeDownEvent];
         
         self.strokeColor = [SKColor grayColor];
-        self.fillColor = [SKColor blackColor];
+        self.fillColor = [SKColor darkGrayColor];
         self.alpha = .4;
         self.lineWidth = 3;
         self.blendMode = SKBlendModeAdd;
@@ -56,7 +56,7 @@
 - (void)turnOff {
     [_volumeUpSequence stop];
     [_volumeDownSequence play];
-    self.fillColor = [SKColor blackColor];
+    self.fillColor = [SKColor darkGrayColor];
     _state = NO;
 }
 
