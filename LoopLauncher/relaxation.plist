@@ -3,12 +3,24 @@
 <plist version="1.0">
 <array>
 	<array>
-		<string>relaxation-Blue-Sun-90</string>
-		<real>0.2</real>
+		<string>relaxation-Kick-Winter-2-90</string>
+		<real>0.25</real>
+	</array>
+	<array>
+		<string>relaxation-Dub-Pulse-90</string>
+		<real>0.23</real>
+	</array>
+	<array>
+		<string>relaxation-Click-Winter-1-90</string>
+		<real>0.25</real>
 	</array>
 	<array>
 		<string>relaxation-Absynth-Beach-90</string>
 		<real>0.12</real>
+	</array>
+	<array>
+		<string>relaxation-Blue-Sun-90</string>
+		<real>0.2</real>
 	</array>
 	<array>
 		<string>relaxation-Bouncing-Mark-I-90</string>
@@ -17,10 +29,6 @@
 	<array>
 		<string>relaxation-Carrier-90</string>
 		<real>0.2</real>
-	</array>
-	<array>
-		<string>relaxation-Click-Winter-1-90</string>
-		<real>0.25</real>
 	</array>
 	<array>
 		<string>relaxation-Cypress-90</string>
@@ -39,20 +47,12 @@
 		<real>0.12</real>
 	</array>
 	<array>
-		<string>relaxation-Dub-Pulse-90</string>
-		<real>0.23</real>
-	</array>
-	<array>
 		<string>relaxation-Eighties-EP-90</string>
 		<real>0.2</real>
 	</array>
 	<array>
 		<string>relaxation-Empee-EP-90</string>
 		<real>0.2</real>
-	</array>
-	<array>
-		<string>relaxation-Kick-Winter-2-90</string>
-		<real>0.25</real>
 	</array>
 </array>
 </plist>

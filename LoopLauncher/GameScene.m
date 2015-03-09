@@ -21,8 +21,17 @@
     _baseInteractorSize = rectSize * .7;
     
     
-    int arrayIndex = 0 + (_loopCounter * 4);
-    for (int i = 0; i < 4; i++) {
+    int arrayIndex;
+    int numAppearOnScreen;
+    if (_loopCounter == 0) {
+        arrayIndex = 0;
+        numAppearOnScreen = 4;
+    } else {
+        arrayIndex = _loopCounter + 3;
+        numAppearOnScreen = 1;
+    }
+    
+    for (int i = 0; i < numAppearOnScreen; i++) {
         if (arrayIndex >= [_soundLoopers count]) { break; }
     
             
@@ -85,7 +94,7 @@
     [self addImpulseButton];
     [self addHomeButton];
     [self addResetButton];
-    _timer = [NSTimer scheduledTimerWithTimeInterval:13 target:self selector:@selector(introduceLoops) userInfo:nil repeats:YES];
+    _timer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(introduceLoops) userInfo:nil repeats:YES];
     [_timer fire];
     [AKOrchestra start];
     for (SoundFilePlayer *player in _soundLoopers) {
