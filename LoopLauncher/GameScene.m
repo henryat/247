@@ -47,7 +47,6 @@
         [_soundInteractors addObject:interactor];
         [self addChild:interactor];
         
-        
         [interactor setPhysicsBody:[SKPhysicsBody bodyWithCircleOfRadius:interactor.frame.size.width/2]];
         interactor.physicsBody.affectedByGravity = NO;
         interactor.physicsBody.dynamic = YES;
@@ -240,7 +239,7 @@
         
         if ([touchedNode isKindOfClass:[SoundInteractor class]]) {
             SoundInteractor *interactor = (SoundInteractor *)touchedNode;
-            if (interactor.state == NO) {
+            if ([interactor getState] == NO) {
                 [interactor turnOn];
             } else {
                 [interactor turnOff];

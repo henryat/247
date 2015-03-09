@@ -11,18 +11,15 @@
 
 @interface SoundInteractor : SKShapeNode
 
+// set SoundFilePlayer object
 - (void)setPlayer:(SoundFilePlayer *)player;
+// get on/off state
+- (BOOL)getState;
+// turn on with volume and color fade in
 - (void)turnOn;
+// turn off with volume and color fade out
 - (void)turnOff;
+// update size of interactor according to current sound amplitude
 - (void)updateAppearance;
-
-@property BOOL state;
-@property SoundFilePlayer *player;
-@property double averagedAmplitude;
-
-@property AKSequence *volumeUpSequence;
-@property AKSequence *volumeDownSequence;
-@property AKEvent *volumeDownEvent;
-@property AKEvent *volumeUpEvent;
 
 @end

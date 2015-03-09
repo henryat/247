@@ -8,14 +8,33 @@
 
 #import "SoundInteractor.h"
 
+@interface SoundInteractor ()
+
+@property(nonatomic) SoundFilePlayer *player;
+@property BOOL state;
+@property double averagedAmplitude;
+@property float fillGrayScaleValue;
+
+@property(nonatomic) AKSequence *volumeUpSequence;
+@property(nonatomic) AKSequence *volumeDownSequence;
+@property(nonatomic) AKEvent *volumeDownEvent;
+@property(nonatomic) AKEvent *volumeUpEvent;
+
+@end
+
+
 @implementation SoundInteractor
+
+float grayScaleValueOff = 0.3;
+float grayScaleValueOn = 1.0;
+float fadeTimeInSeconds = 1.0;
 
 - (instancetype)init {
     self = [super init];
     
     if (self) {
+        self.fillGrayScaleValue = grayScaleValueOff;
         self.strokeColor = [SKColor grayColor];
-        self.fillColor = [SKColor darkGrayColor];
         self.alpha = .4;
         self.lineWidth = 3;
         self.blendMode = SKBlendModeAdd;
@@ -30,11 +49,13 @@
     _state = NO;
     _averagedAmplitude = 0.0;
     
-    float volumeStepSize = _player.amplitude.maximum / 100.0;
+    float volumeStepSize = _player.amplitude.maximum / (fadeTimeInSeconds / 0.01);
+    float grayScaleStepSize = (grayScaleValueOn - grayScaleValueOff) / (fadeTimeInSeconds / 0.01);
         
     _volumeUpSequence = [AKSequence sequence];
     _volumeUpEvent = [[AKEvent alloc] initWithBlock:^{
         if (_player.amplitude.value < _player.amplitude.maximum) {
+            _fillGrayScaleValue += grayScaleStepSize;
             _player.amplitude.value += volumeStepSize;
             if (_player.amplitude.value > _player.amplitude.maximum)
                 _player.amplitude.value = _player.amplitude.maximum;
@@ -46,6 +67,7 @@
     _volumeDownSequence = [AKSequence sequence];
     _volumeDownEvent = [[AKEvent alloc] initWithBlock:^{
         if (_player.amplitude.value > _player.amplitude.minimum) {
+            _fillGrayScaleValue -= grayScaleStepSize;
             _player.amplitude.value -= volumeStepSize;
             if (_player.amplitude.value < _player.amplitude.minimum)
                 _player.amplitude.value = _player.amplitude.minimum;
@@ -53,6 +75,10 @@
         }
     }];
     [_volumeDownSequence addEvent:_volumeDownEvent];
+}
+
+- (BOOL)getState {
+    return _state;
 }
 
 - (void)turnOn {
@@ -76,6 +102,8 @@
     double scaleFactor = 1 + (_averagedAmplitude * 5);
     self.xScale = scaleFactor;
     self.yScale = scaleFactor;
+    
+    self.fillColor = [SKColor colorWithWhite:_fillGrayScaleValue alpha:1.0];
 }
 
 @end
