@@ -33,6 +33,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnToMenu:) name:@"GoHome" object:nil];
 
     // Configure the view.
     SKView * skView = (SKView *)self.view;
@@ -43,6 +45,8 @@
     skView.backgroundColor = [UIColor colorWithRed:.9 green:.9 blue:.95 alpha:1];
     
     [self fillHomeView];
+    _homeView = self.view;
+    _blankView = [[UIView alloc] initWithFrame:self.view.frame];
     
     // Create and configure the scene.
 //    GameScene *scene = [GameScene unarchiveFromFile:@"GameScene"];
@@ -132,18 +136,19 @@
     [_goalCounter addTarget:self action:@selector(changeCounter) forControlEvents:UIControlEventValueChanged];
     
     _goalCounter.minimumValue = 0;
-    _goalCounter.maximumValue = 9;
+    _goalCounter.maximumValue = 10;
     _goalCounter.stepValue = 1;
     _goalCounter.value = 3;
     
     
     _goalNumberLabel = [[UILabel alloc] init];
-    _goalNumberLabel.text = [NSString stringWithFormat:@"Weekly Goal: %d", (int)_goalCounter.value];
+    _goalNumberLabel.text = [NSString stringWithFormat:@"Weekly Goal: %d", 10];
     _goalNumberLabel.textAlignment = NSTextAlignmentCenter;
     _goalNumberLabel.font = [UIFont fontWithName:@"Trebuchet MS" size:20];
     _goalNumberLabel.textColor = [UIColor darkGrayColor];
     [_goalNumberLabel sizeToFit];
-    _goalNumberLabel.frame = CGRectMake((windowWidth - _goalNumberLabel.frame.size.width)/2, _goalCounter.frame.origin.y - _goalNumberLabel.frame.size.height - 40, _goalNumberLabel.frame.size.width,_goalNumberLabel.frame.size.height);
+    _goalNumberLabel.frame = CGRectMake((windowWidth - _goalNumberLabel.frame.size.width)/2, _goalCounter.frame.origin.y - _goalNumberLabel.frame.size.height - 40, _goalNumberLabel.frame.size.width ,_goalNumberLabel.frame.size.height);
+    _goalNumberLabel.text = [NSString stringWithFormat:@"Weekly Goal: %d", (int)_goalCounter.value];
     [self.view addSubview:_goalNumberLabel];
     
     UILabel *descriptionLabel = [[UILabel alloc] init];
@@ -172,15 +177,31 @@
     scene.scaleMode = SKSceneScaleModeAspectFill;
     scene.size = [UIScreen mainScreen].bounds.size;
     SKTransition *transition = [SKTransition crossFadeWithDuration:2];
+    [UIView animateWithDuration:1 animations:^{
+        for(UIView *subView in [self.view subviews]){
+            subView.alpha = 0;
+        }
+    }];
 // Present the scene.
     [(SKView *)self.view presentScene:scene transition:transition];
 }
 
 - (void)changeCounter
 {
-    NSLog(@"Counter Touched");
-    NSLog(@"Value is now: %d", (int)_goalCounter.value);
     _goalNumberLabel.text = [NSString stringWithFormat:@"Weekly Goal: %d", (int)_goalCounter.value];
+}
+
+- (void)returnToMenu:(NSNotification *)notification
+{
+    [UIView animateWithDuration:1 animations:^{
+        for(UIView *subView in [self.view subviews]){
+            subView.alpha = 1;
+        }
+    }];
+    SKScene *blankScene = [[SKScene alloc] initWithSize:self.view.frame.size];
+    blankScene.backgroundColor = [SKColor whiteColor];
+    SKTransition *transition = [SKTransition crossFadeWithDuration:1];
+    [(SKView *)self.view presentScene:blankScene transition:transition];
 }
 
 - (void)didReceiveMemoryWarning

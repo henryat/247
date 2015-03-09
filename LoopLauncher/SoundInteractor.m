@@ -22,9 +22,8 @@
         self.alpha = .4;
         self.lineWidth = 3;
         self.blendMode = SKBlendModeAdd;
-        
-        
-    }
+        self.glowWidth = 5;        
+}
     
     return self;
 }

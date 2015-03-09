@@ -13,5 +13,7 @@
 
 @property UILabel *goalNumberLabel;
 @property UIStepper *goalCounter;
+@property UIView *homeView;
+@property UIView *blankView;
 
 @end

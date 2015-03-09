@@ -11,6 +11,7 @@
 @implementation GameScene
 
 -(void)didMoveToView:(SKView *)view {
+    
     /* Setup your scene here */
     self.backgroundColor = [SKColor orangeColor];
     self.scaleMode = SKSceneScaleModeAspectFit;
@@ -21,6 +22,9 @@
     
     // create all the loopers
     [self addSoundLoopers];
+    [self addImpulseButton];
+    [self addHomeButton];
+    [self addResetButton];
     [AKOrchestra start];
     for (SoundFilePlayer *player in _soundLoopers) {
         [player play];
@@ -90,13 +94,76 @@
             interactor.physicsBody.categoryBitMask = ballCategory;
             interactor.physicsBody.collisionBitMask = ballCategory | edgeCategory;
             interactor.physicsBody.contactTestBitMask = edgeCategory | ballCategory;
-            [interactor.physicsBody applyImpulse:CGVectorMake((CGFloat) random()/(CGFloat) RAND_MAX * 5, (CGFloat) random()/(CGFloat) RAND_MAX * 5)];
+            CGVector impulseVec = CGVectorMake((CGFloat) random()/(CGFloat) RAND_MAX * 5, (CGFloat) random()/(CGFloat) RAND_MAX * 5);
+            if(rand() > RAND_MAX/2) impulseVec.dx = -impulseVec.dx;
+            if(rand() > RAND_MAX/2) impulseVec.dy = -impulseVec.dy;
+            [interactor.physicsBody applyImpulse:impulseVec];
             SoundFilePlayer *player = [_soundLoopers objectAtIndex:arrayIndex];
             interactor.player = player;
             arrayIndex++;
             [_soundInteractors addObject:interactor];
         }
     }
+}
+
+- (void)addImpulseButton
+{
+    CGFloat windowWidth = [UIScreen mainScreen].bounds.size.width;
+    SKShapeNode *impulseButton = [SKShapeNode shapeNodeWithCircleOfRadius:25];
+    impulseButton.position = CGPointMake(windowWidth/2, 40);
+    impulseButton.fillColor = [SKColor darkGrayColor];
+    impulseButton.name = @"impulseButton";
+    
+    SKLabelNode *label = [[SKLabelNode alloc]initWithFontNamed:@"Trebuchet MS"];
+    label.text = @"pulse";
+    label.fontSize = 14;
+    label.fontColor = [SKColor whiteColor];
+    label.position = CGPointMake(0,-5);
+    
+    [impulseButton addChild:label];
+    
+    [self addChild:impulseButton];
+    
+}
+
+- (void)addResetButton
+{
+    CGFloat windowWidth = [UIScreen mainScreen].bounds.size.width;
+    SKShapeNode *resetButton = [SKShapeNode shapeNodeWithCircleOfRadius:25];
+    resetButton.position = CGPointMake(windowWidth*3/4, 40);
+    resetButton.fillColor = [SKColor darkGrayColor];
+    resetButton.name = @"resetButton";
+    
+    SKLabelNode *label = [[SKLabelNode alloc]initWithFontNamed:@"Trebuchet MS"];
+    label.text = @"reset";
+    label.fontSize = 14;
+    label.fontColor = [SKColor whiteColor];
+    label.position = CGPointMake(0,-5);
+    
+    [resetButton addChild:label];
+    
+    [self addChild:resetButton];
+    
+}
+
+- (void)addHomeButton
+{
+    CGFloat windowWidth = [UIScreen mainScreen].bounds.size.width;
+    SKShapeNode *homeButton = [SKShapeNode shapeNodeWithCircleOfRadius:25];
+    homeButton.position = CGPointMake(windowWidth/4, 40);
+    homeButton.fillColor = [SKColor darkGrayColor];
+    homeButton.name = @"homeButton";
+    
+    SKLabelNode *label = [[SKLabelNode alloc]initWithFontNamed:@"Trebuchet MS"];
+    label.text = @"home";
+    label.fontSize = 14;
+    label.fontColor = [SKColor whiteColor];
+    label.position = CGPointMake(0,-5);
+    
+    [homeButton addChild:label];
+
+    [self addChild:homeButton];
+    
 }
 
 - (void)didBeginContact:(SKPhysicsContact *)contact
@@ -164,15 +231,66 @@
         CGPoint location = [touch locationInNode:self];
         SKNode *touchedNode = [self nodeAtPoint:location];
         
-        if (touchedNode != self) {
+        if ([touchedNode isKindOfClass:[SoundInteractor class]]) {
             SoundInteractor *interactor = (SoundInteractor *)touchedNode;
             if (interactor.state == NO) {
                 [interactor turnOn];
             } else {
                 [interactor turnOff];
             }
+        } else if([touchedNode.name isEqualToString:@"impulseButton"]) {
+            [self applyImpulses];
+        } else if([touchedNode.name isEqualToString:@"homeButton"]) {
+            [self goHome];
+        } else if([touchedNode.name isEqualToString:@"resetButton"]) {
+            [self resetNodes];
         }
     }
+}
+
+- (void)applyImpulses {
+    for(SoundInteractor *interactor in _soundInteractors){
+        CGVector impulseVec = CGVectorMake((CGFloat) random()/(CGFloat) RAND_MAX * 5, (CGFloat) random()/(CGFloat) RAND_MAX * 5);
+        if(rand() > RAND_MAX/2) impulseVec.dx = -impulseVec.dx;
+        if(rand() > RAND_MAX/2) impulseVec.dy = -impulseVec.dy;
+        [interactor.physicsBody applyImpulse:impulseVec];
+    }
+}
+
+- (void)resetNodes
+{
+    CGFloat windowWidth = [UIScreen mainScreen].bounds.size.width;
+    CGFloat windowHeight = [UIScreen mainScreen].bounds.size.height;
+    
+    CGFloat rectSize = (windowWidth * 0.75) / 4.0;
+    CGFloat rectBufferSize = (windowWidth * 0.25) / 5.0;
+    
+    int arrayIndex = 0;
+    for (int i = 0; i < 4; i++) {
+        if (arrayIndex >= [_soundInteractors count]) { break; }
+        for (int j = 0; j < 4; j++) {
+            if (arrayIndex >= [_soundInteractors count]) { break; }
+            
+            SoundInteractor *interactor = _soundInteractors[arrayIndex];
+            
+            CGFloat x = j * rectSize + (j + 1) * rectBufferSize;
+            CGFloat y = windowHeight - (i + 1) * rectSize - (i + 1) * rectBufferSize - 100;
+            
+            interactor.position = CGPointMake(x + rectSize/2, y);
+            
+            CGVector impulseVec = CGVectorMake((CGFloat) random()/(CGFloat) RAND_MAX * 5, (CGFloat) random()/(CGFloat) RAND_MAX * 5);
+            if(rand() > RAND_MAX/2) impulseVec.dx = -impulseVec.dx;
+            if(rand() > RAND_MAX/2) impulseVec.dy = -impulseVec.dy;
+            [interactor.physicsBody applyImpulse:impulseVec];
+            arrayIndex++;
+        }
+    }
+}
+
+- (void)goHome
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"GoHome" object:nil];
+//    [(SKView *)self.view presentScene:nil];
 }
 
 //- (void) pinchInteractor:(UIPinchGestureRecognizer *)recognizer {
