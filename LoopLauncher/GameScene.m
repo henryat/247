@@ -11,12 +11,60 @@
 @implementation GameScene
 
 -(void)introduceLoops{
-    //SoundInteractor *interactor = [SoundInteractor shapeNodeWithCircleOfRadius:_baseInteractorSize/2];
+    
+    CGFloat windowWidth = [UIScreen mainScreen].bounds.size.width;
+    CGFloat windowHeight = [UIScreen mainScreen].bounds.size.height;
+    
+    CGFloat rectSize = (windowWidth * 0.75) / 4.0;
+    CGFloat rectBufferSize = (windowWidth * 0.25) / 5.0;
+    
+    _baseInteractorSize = rectSize * .7;
+    
+    
+    int arrayIndex = 0 + (_loopCounter * 4);
+    for (int i = 0; i < 4; i++) {
+        if (arrayIndex >= [_soundLoopers count]) { break; }
+    
+            
+            CGFloat x = _loopCounter * rectSize + (_loopCounter + 1) * rectBufferSize;
+            CGFloat y = windowHeight - (i + 1) * rectSize - (i + 1) * rectBufferSize - 100;
+            
+            SoundInteractor *interactor = [SoundInteractor shapeNodeWithCircleOfRadius:_baseInteractorSize/2];
+            interactor.position = CGPointMake(x + rectSize/2, y);
+            
+        
+             [self addChild:interactor];
+        
+            
+            [interactor setPhysicsBody:[SKPhysicsBody bodyWithCircleOfRadius:interactor.frame.size.width/2]];
+            interactor.physicsBody.affectedByGravity = NO;
+            interactor.physicsBody.dynamic = YES;
+            interactor.physicsBody.restitution = 1.0;
+            interactor.physicsBody.friction = 0.0f;
+            interactor.physicsBody.linearDamping = 0.0f;
+            interactor.physicsBody.angularDamping = 0.0f;
+            interactor.physicsBody.allowsRotation = NO;
+            
+            interactor.physicsBody.categoryBitMask = ballCategory;
+            interactor.physicsBody.collisionBitMask = ballCategory | edgeCategory;
+            interactor.physicsBody.contactTestBitMask = edgeCategory | ballCategory;
+            CGVector impulseVec = CGVectorMake((CGFloat) random()/(CGFloat) RAND_MAX * 5, (CGFloat) random()/(CGFloat) RAND_MAX * 5);
+            if(rand() > RAND_MAX/2) impulseVec.dx = -impulseVec.dx;
+            if(rand() > RAND_MAX/2) impulseVec.dy = -impulseVec.dy;
+            [interactor.physicsBody applyImpulse:impulseVec];
+            SoundFilePlayer *player = [_soundLoopers objectAtIndex:arrayIndex];
+            interactor.player = player;
+            arrayIndex++;
+            [_soundInteractors addObject:interactor];
     if (_loopCounter > _soundInteractors.count - 1) {
         [_timer invalidate];
         return;
     }
-    [self addChild:_soundInteractors[_loopCounter]];
+    //[self addChild:_soundInteractors[_loopCounter]];
+    
+        }
+   // }
+
  
     
     _loopCounter ++;
@@ -32,12 +80,12 @@
     self.physicsWorld.contactDelegate = self;
     
     
-//    // create all the loopers
-    
-    
-    
+    // create all the loopers
     [self addSoundLoopers];
-    _timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(introduceLoops) userInfo:nil repeats:YES];
+    [self addImpulseButton];
+    [self addHomeButton];
+    [self addResetButton];
+    _timer = [NSTimer scheduledTimerWithTimeInterval:13 target:self selector:@selector(introduceLoops) userInfo:nil repeats:YES];
     [_timer fire];
     [AKOrchestra start];
     for (SoundFilePlayer *player in _soundLoopers) {
@@ -76,58 +124,67 @@
         [AKOrchestra addInstrument:player];
         [AKOrchestra addInstrument:player.audioAnalyzer];
     }
-    
-    CGFloat windowWidth = [UIScreen mainScreen].bounds.size.width;
-    CGFloat windowHeight = [UIScreen mainScreen].bounds.size.height;
-    
-    CGFloat rectSize = (windowWidth * 0.75) / 4.0;
-    CGFloat rectBufferSize = (windowWidth * 0.25) / 5.0;
-    
-    _baseInteractorSize = rectSize * .7;
-    
-    
-    int arrayIndex = 0;
-    for (int i = 0; i < 4; i++) {
-        if (arrayIndex >= [_soundLoopers count]) { break; }
-        for (int j = 0; j < 4; j++) {
-            if (arrayIndex >= [_soundLoopers count]) { break; }
-            
-            CGFloat x = j * rectSize + (j + 1) * rectBufferSize;
-            CGFloat y = windowHeight - (i + 1) * rectSize - (i + 1) * rectBufferSize - 100;
-            
-            SoundInteractor *interactor = [SoundInteractor shapeNodeWithCircleOfRadius:_baseInteractorSize/2];
-            interactor.position = CGPointMake(x + rectSize/2, y);
-            
-          /*  if (_loopCounter < 1) {
-            [self addChild:interactor];
-            }*/
-            
-            [interactor setPhysicsBody:[SKPhysicsBody bodyWithCircleOfRadius:interactor.frame.size.width/2]];
-            interactor.physicsBody.affectedByGravity = NO;
-            interactor.physicsBody.dynamic = YES;
-            interactor.physicsBody.restitution = 1.0;
-            interactor.physicsBody.friction = 0.0f;
-            interactor.physicsBody.linearDamping = 0.0f;
-            interactor.physicsBody.angularDamping = 0.0f;
-            interactor.physicsBody.allowsRotation = NO;
-            
-            interactor.physicsBody.categoryBitMask = ballCategory;
-            interactor.physicsBody.collisionBitMask = ballCategory | edgeCategory;
-            interactor.physicsBody.contactTestBitMask = edgeCategory | ballCategory;
-            CGVector impulseVec = CGVectorMake((CGFloat) random()/(CGFloat) RAND_MAX * 5, (CGFloat) random()/(CGFloat) RAND_MAX * 5);
-            if(rand() > RAND_MAX/2) impulseVec.dx = -impulseVec.dx;
-            if(rand() > RAND_MAX/2) impulseVec.dy = -impulseVec.dy;
-            [interactor.physicsBody applyImpulse:impulseVec];
-            SoundFilePlayer *player = [_soundLoopers objectAtIndex:arrayIndex];
-            interactor.player = player;
-            arrayIndex++;
-            [_soundInteractors addObject:interactor];
-        }
-    }
 }
 
+- (void)addImpulseButton
+{
+    CGFloat windowWidth = [UIScreen mainScreen].bounds.size.width;
+    SKShapeNode *impulseButton = [SKShapeNode shapeNodeWithCircleOfRadius:25];
+    impulseButton.position = CGPointMake(windowWidth/2, 40);
+    impulseButton.fillColor = [SKColor darkGrayColor];
+    impulseButton.name = @"impulseButton";
+    
+    SKLabelNode *label = [[SKLabelNode alloc]initWithFontNamed:@"Trebuchet MS"];
+    label.text = @"pulse";
+    label.fontSize = 14;
+    label.fontColor = [SKColor whiteColor];
+    label.position = CGPointMake(0,-5);
+    
+    [impulseButton addChild:label];
+    
+    [self addChild:impulseButton];
+    
+}
 
+- (void)addResetButton
+{
+    CGFloat windowWidth = [UIScreen mainScreen].bounds.size.width;
+    SKShapeNode *resetButton = [SKShapeNode shapeNodeWithCircleOfRadius:25];
+    resetButton.position = CGPointMake(windowWidth*3/4, 40);
+    resetButton.fillColor = [SKColor darkGrayColor];
+    resetButton.name = @"resetButton";
+    
+    SKLabelNode *label = [[SKLabelNode alloc]initWithFontNamed:@"Trebuchet MS"];
+    label.text = @"reset";
+    label.fontSize = 14;
+    label.fontColor = [SKColor whiteColor];
+    label.position = CGPointMake(0,-5);
+    
+    [resetButton addChild:label];
+    
+    [self addChild:resetButton];
+    
+}
 
+- (void)addHomeButton
+{
+    CGFloat windowWidth = [UIScreen mainScreen].bounds.size.width;
+    SKShapeNode *homeButton = [SKShapeNode shapeNodeWithCircleOfRadius:25];
+    homeButton.position = CGPointMake(windowWidth/4, 40);
+    homeButton.fillColor = [SKColor darkGrayColor];
+    homeButton.name = @"homeButton";
+    
+    SKLabelNode *label = [[SKLabelNode alloc]initWithFontNamed:@"Trebuchet MS"];
+    label.text = @"home";
+    label.fontSize = 14;
+    label.fontColor = [SKColor whiteColor];
+    label.position = CGPointMake(0,-5);
+    
+    [homeButton addChild:label];
+
+    [self addChild:homeButton];
+    
+}
 
 - (void)didBeginContact:(SKPhysicsContact *)contact
 {
