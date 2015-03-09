@@ -17,7 +17,6 @@ static const uint32_t borderCategory = 0x1 << 4; // 0000000000000000000000000001
 
 @interface GameScene : SKScene <UIGestureRecognizerDelegate, SKPhysicsContactDelegate>
 
-
 @property NSMutableArray *soundLoopers;
 @property NSMutableArray *soundInteractors;
 @property AKEvent *updateAnalysis;
@@ -28,5 +27,9 @@ static const uint32_t borderCategory = 0x1 << 4; // 0000000000000000000000000001
 @property SoundInteractor *pinchingInteractor;
 @property int loopCounter;
 @property NSTimer *timer;
+
+// smooth animation buffers
+@property NSMutableArray *averagedAmplitudes;
+@property NSMutableArray *smoothedAmplitudes;
 
 @end

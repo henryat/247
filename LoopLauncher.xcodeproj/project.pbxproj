@@ -175,9 +175,6 @@
 		BAAA4BCB1AA425BE004FE865 /* relaxation-Empee-EP-90.aiff in Resources */ = {isa = PBXBuildFile; fileRef = BAAA4BBE1AA425BE004FE865 /* relaxation-Empee-EP-90.aiff */; };
 		BAAA4BCC1AA425BE004FE865 /* relaxation-Kick-Winter-2-90.aiff in Resources */ = {isa = PBXBuildFile; fileRef = BAAA4BBF1AA425BE004FE865 /* relaxation-Kick-Winter-2-90.aiff */; };
 		BAAA4BCF1AA42601004FE865 /* SoundFilePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = BAAA4BCE1AA42601004FE865 /* SoundFilePlayer.m */; };
-		E662D7BA1AAB76380042475C /* ball.png in Resources */ = {isa = PBXBuildFile; fileRef = E662D7B81AAB76380042475C /* ball.png */; };
-		E662D7BB1AAB76380042475C /* bg-iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = E662D7B91AAB76380042475C /* bg-iphone.png */; };
-		E662D7BD1AAB786B0042475C /* paddle.png in Resources */ = {isa = PBXBuildFile; fileRef = E662D7BC1AAB786B0042475C /* paddle.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -532,9 +529,6 @@
 		BAAA4BBF1AA425BE004FE865 /* relaxation-Kick-Winter-2-90.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = "relaxation-Kick-Winter-2-90.aiff"; sourceTree = "<group>"; };
 		BAAA4BCD1AA42601004FE865 /* SoundFilePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SoundFilePlayer.h; sourceTree = "<group>"; };
 		BAAA4BCE1AA42601004FE865 /* SoundFilePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SoundFilePlayer.m; sourceTree = "<group>"; };
-		E662D7B81AAB76380042475C /* ball.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ball.png; sourceTree = "<group>"; };
-		E662D7B91AAB76380042475C /* bg-iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bg-iphone.png"; sourceTree = "<group>"; };
-		E662D7BC1AAB786B0042475C /* paddle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = paddle.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -585,12 +579,9 @@
 				BAAA49991AA42580004FE865 /* GameScene.m */,
 				BAAA499B1AA42580004FE865 /* GameScene.sks */,
 				BAAA499D1AA42580004FE865 /* GameViewController.h */,
-				E662D7BC1AAB786B0042475C /* paddle.png */,
 				BAAA499E1AA42580004FE865 /* GameViewController.m */,
 				BAAA49A31AA42580004FE865 /* Images.xcassets */,
 				BAAA49A51AA42580004FE865 /* LaunchScreen.xib */,
-				E662D7B81AAB76380042475C /* ball.png */,
-				E662D7B91AAB76380042475C /* bg-iphone.png */,
 				BAAA49A01AA42580004FE865 /* Main.storyboard */,
 				BAAA4BCD1AA42601004FE865 /* SoundFilePlayer.h */,
 				BAAA4BCE1AA42601004FE865 /* SoundFilePlayer.m */,
@@ -1348,10 +1339,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				BAAA4BC71AA425BE004FE865 /* relaxation-Distant-Pianet-90.aiff in Resources */,
-				E662D7BA1AAB76380042475C /* ball.png in Resources */,
 				BA1FE70A1AA429F200D4C4AB /* relaxation.plist in Resources */,
 				BAAA4BC31AA425BE004FE865 /* relaxation-Carrier-90.aiff in Resources */,
-				E662D7BB1AAB76380042475C /* bg-iphone.png in Resources */,
 				BAAA4BC51AA425BE004FE865 /* relaxation-Cypress-90.aiff in Resources */,
 				BAAA4B2D1AA42594004FE865 /* LICENSE.TXT in Resources */,
 				BAAA4BCA1AA425BE004FE865 /* relaxation-Eighties-EP-90.aiff in Resources */,
@@ -1360,7 +1349,6 @@
 				BAAA49A41AA42580004FE865 /* Images.xcassets in Resources */,
 				BAAA4BC61AA425BE004FE865 /* relaxation-Dance-Organ-90.aiff in Resources */,
 				BAAA4BC91AA425BE004FE865 /* relaxation-Dub-Pulse-90.aiff in Resources */,
-				E662D7BD1AAB786B0042475C /* paddle.png in Resources */,
 				BAAA4BCC1AA425BE004FE865 /* relaxation-Kick-Winter-2-90.aiff in Resources */,
 				BAAA4B331AA42594004FE865 /* marmstk1.wav in Resources */,
 				BAAA4BC11AA425BE004FE865 /* relaxation-Blue-Sun-90.aiff in Resources */,

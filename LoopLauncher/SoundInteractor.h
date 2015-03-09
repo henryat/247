@@ -11,7 +11,12 @@
 
 @interface SoundInteractor : SKShapeNode
 
+- (void)turnOn;
+- (void)turnOff;
+- (void)updateAppearance;
+
 @property BOOL state;
 @property SoundFilePlayer *player;
+@property double averagedAmplitude;
 
 @end
