@@ -33,21 +33,20 @@
     
     for (int i = 0; i < numAppearOnScreen; i++) {
         if (arrayIndex >= [_soundLoopers count]) { break; }
-    
-            
-        CGFloat x = _loopCounter * rectSize + (_loopCounter + 1) * rectBufferSize;
+        
+        CGFloat x = i * rectSize + (i + 1) * rectBufferSize;
         CGFloat y = windowHeight - (i + 1) * rectSize - (i + 1) * rectBufferSize - 100;
         
         SoundInteractor *interactor = [SoundInteractor shapeNodeWithCircleOfRadius:_baseInteractorSize/2];
         interactor.position = CGPointMake(x + rectSize/2, y);
-    
+        
         SoundFilePlayer *player = [_soundLoopers objectAtIndex:arrayIndex];
         [interactor setPlayer:player];
         arrayIndex++;
         
         [_soundInteractors addObject:interactor];
         [self addChild:interactor];
-    
+        
         
         [interactor setPhysicsBody:[SKPhysicsBody bodyWithCircleOfRadius:interactor.frame.size.width/2]];
         interactor.physicsBody.affectedByGravity = NO;
@@ -66,16 +65,12 @@
         if(rand() > RAND_MAX/2) impulseVec.dy = -impulseVec.dy;
         [interactor.physicsBody applyImpulse:impulseVec];
         
-    if (_loopCounter > _soundInteractors.count - 1) {
-        [_timer invalidate];
-        return;
-    }
-    //[self addChild:_soundInteractors[_loopCounter]];
-    
+        if (_loopCounter > _soundInteractors.count - 1) {
+            [_timer invalidate];
+            return;
         }
-   // }
-
- 
+        
+    }
     
     _loopCounter ++;
 }
@@ -105,7 +100,7 @@
 }
 
 -(void)willMoveFromView:(SKView *)view{
-//    [view removeGestureRecognizer:_pinchGestureRecognizer];
+    //    [view removeGestureRecognizer:_pinchGestureRecognizer];
 }
 
 
@@ -185,7 +180,7 @@
     label.position = CGPointMake(0,-5);
     
     [homeButton addChild:label];
-
+    
     [self addChild:homeButton];
     
 }
@@ -201,8 +196,8 @@
     if((bodyA.categoryBitMask == edgeCategory && bodyB.categoryBitMask == ballCategory)){
         if(contactImpulse < 15 && contactImpulse > 0){
             if(contactNormal.dx == -1 && contactNormal.dy == 0){ // right wall
-//                NSLog(@"rightWall");
-
+                //                NSLog(@"rightWall");
+                
                 [bodyB applyImpulse:CGVectorMake(-contactImpulse, 0)];
                 if(abs(bodyB.velocity.dx) + abs(bodyB.velocity.dy) < 25){
                     bodyB.velocity = CGVectorMake(bodyB.velocity.dx * 1.5, bodyB.velocity.dy * 1.5);
@@ -211,13 +206,13 @@
                     bodyB.velocity = CGVectorMake(bodyB.velocity.dx * 3, bodyB.velocity.dy * 3);
                 }
             } else if(contactNormal.dx == 1 && contactNormal.dy == 0){ // left wall
-//                NSLog(@"leftWall");
+                //                NSLog(@"leftWall");
                 [bodyB applyImpulse:CGVectorMake(contactImpulse, 0)];
             } else if(contactNormal.dx == 0 && contactNormal.dy == -1){ // top wall
                 [bodyB applyImpulse:CGVectorMake(0, -contactImpulse)];
-//                NSLog(@"topWall");
+                //                NSLog(@"topWall");
             } else if(contactNormal.dx == 0 && contactNormal.dy == 1){ // bottom wall
-//                NSLog(@"bottomWall");
+                //                NSLog(@"bottomWall");
                 [bodyB applyImpulse:CGVectorMake(0, contactImpulse)];
             }
         }
@@ -296,7 +291,7 @@
 - (void)goHome
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"GoHome" object:nil];
-//    [(SKView *)self.view presentScene:nil];
+    //    [(SKView *)self.view presentScene:nil];
 }
 
 -(void)update:(CFTimeInterval)currentTime {
