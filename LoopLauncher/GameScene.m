@@ -35,7 +35,7 @@
         if (arrayIndex >= [_soundLoopers count]) { break; }
     
             
-            CGFloat x = _loopCounter * rectSize + (_loopCounter + 1) * rectBufferSize;
+            CGFloat x = i * rectSize + (i + 1) * rectBufferSize;
             CGFloat y = windowHeight - (i + 1) * rectSize - (i + 1) * rectBufferSize - 100;
             
             SoundInteractor *interactor = [SoundInteractor shapeNodeWithCircleOfRadius:_baseInteractorSize/2];
@@ -94,7 +94,7 @@
     [self addImpulseButton];
     [self addHomeButton];
     [self addResetButton];
-    _timer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(introduceLoops) userInfo:nil repeats:YES];
+    _timer = [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(introduceLoops) userInfo:nil repeats:YES];
     [_timer fire];
     [AKOrchestra start];
     for (SoundFilePlayer *player in _soundLoopers) {
