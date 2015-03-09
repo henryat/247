@@ -19,4 +19,9 @@
 @property SoundFilePlayer *player;
 @property double averagedAmplitude;
 
+@property AKSequence *volumeUpSequence;
+@property AKSequence *volumeDownSequence;
+@property AKEvent *volumeDownEvent;
+@property AKEvent *volumeUpEvent;
+
 @end

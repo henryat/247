@@ -17,33 +17,53 @@
         _state = NO;
         _averagedAmplitude = 0.0;
         
+        _volumeUpSequence = [AKSequence sequence];
+        _volumeUpEvent = [[AKEvent alloc] initWithBlock:^{
+            if (_player.amplitude.value < _player.amplitude.maximum) {
+                _player.amplitude.value += 0.005;
+                [_volumeUpSequence addEvent:_volumeUpEvent afterDuration:0.01];
+            }
+        }];
+        [_volumeUpSequence addEvent:_volumeUpEvent];
+        
+        _volumeDownSequence = [AKSequence sequence];
+        _volumeDownEvent = [[AKEvent alloc] initWithBlock:^{
+            if (_player.amplitude.value > _player.amplitude.minimum) {
+                _player.amplitude.value -= 0.005;
+                [_volumeDownSequence addEvent:_volumeDownEvent afterDuration:0.01];
+            }
+        }];
+        [_volumeDownSequence addEvent:_volumeDownEvent];
+        
         self.strokeColor = [SKColor grayColor];
         self.fillColor = [SKColor darkGrayColor];
         self.alpha = .4;
         self.lineWidth = 3;
         self.blendMode = SKBlendModeAdd;
-        self.glowWidth = 5;        
+        self.glowWidth = 5;
 }
     
     return self;
 }
 
 - (void)turnOn {
-    [_player.amplitude setValue:_player.amplitude.maximum];
-    self.fillColor = [SKColor greenColor];
+    [_volumeDownSequence stop];
+    [_volumeUpSequence play];
+    self.fillColor = [SKColor whiteColor];
     _state = YES;
 }
 
 - (void)turnOff {
-    [_player.amplitude setValue:_player.amplitude.minimum];
+    [_volumeUpSequence stop];
+    [_volumeDownSequence play];
     self.fillColor = [SKColor darkGrayColor];
     _state = NO;
 }
 
 - (void)updateAppearance {
-    double val = 0.84;
+    double bias = 0.84;
     double soundAmplitude = _player.audioAnalyzer.trackedAmplitude.value;
-    _averagedAmplitude = val * _averagedAmplitude + (1 - val) * soundAmplitude;
+    _averagedAmplitude = bias * _averagedAmplitude + (1 - bias) * soundAmplitude;
     double scaleFactor = 1 + (_averagedAmplitude * 5);
     self.xScale = scaleFactor;
     self.yScale = scaleFactor;

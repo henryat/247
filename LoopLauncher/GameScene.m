@@ -92,12 +92,6 @@
         [player play];
         [player.audioAnalyzer play];
     }
-    
-//    [self startAnalysisSequence];
-    
-//    _pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchInteractor:)];
-//    _pinchGestureRecognizer.delegate = self;
-//    [view addGestureRecognizer:_pinchGestureRecognizer];
 }
 
 -(void)willMoveFromView:(SKView *)view{
@@ -225,24 +219,6 @@
     }
 }
 
-//-(void)startAnalysisSequence
-//{
-//    _analysisSequence = [AKSequence sequence];
-//    _updateAnalysis = [[AKEvent alloc] initWithBlock:^{
-//        [self performSelectorOnMainThread:@selector(updateUI) withObject:self waitUntilDone:NO];
-//        [_analysisSequence addEvent:_updateAnalysis afterDuration:0.05];
-//    }];
-//    [_analysisSequence addEvent:_updateAnalysis];
-//    
-//    _averagedAmplitudes = [[NSMutableArray alloc] init];
-//    _smoothedAmplitudes = [[NSMutableArray alloc] init];
-//    for (int i = 0; i < _soundLoopers.count; i++) {
-//        [_averagedAmplitudes addObject:[NSNumber numberWithDouble:0.0]];
-//        [_averagedAmplitudes addObject:[NSNumber numberWithDouble:0.0]];
-//    }
-//    
-//    [_analysisSequence play];
-//}
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     /* Called when a touch begins */
@@ -312,52 +288,6 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"GoHome" object:nil];
 //    [(SKView *)self.view presentScene:nil];
 }
-
-//- (void) pinchInteractor:(UIPinchGestureRecognizer *)recognizer {
-//    self.pinchActive = YES;
-//    
-//    CGPoint pinchCenter = [recognizer locationInView:self.view];
-//    
-//    if(recognizer.state == UIGestureRecognizerStateBegan){
-////        UIView *marker = [[UIView alloc] initWithFrame:CGRectMake(pinchCenter.x, pinchCenter.y, 5, 5)];
-////        [marker setBackgroundColor:[UIColor redColor]];
-////        [self.view addSubview:marker];
-//        CGPoint convertedPoint = [self.view convertPoint:pinchCenter toScene:self.scene];
-//        [self setPinchedInteractor:convertedPoint];
-//        if (_pinchingInteractor) {
-//            _pinchingInteractor.fillColor = [SKColor blueColor];
-//        }
-//    } else if(recognizer.state == UIGestureRecognizerStateEnded || recognizer.state == UIGestureRecognizerStateCancelled) {
-//        if(!_pinchingInteractor) return;
-//        if(_pinchingInteractor.state == YES)
-//            _pinchingInteractor.fillColor = [SKColor greenColor];
-//        else
-//            _pinchingInteractor.fillColor = [SKColor darkGrayColor];
-//        _pinchingInteractor = nil;
-//    }
-//}
-//
-//- (void)setPinchedInteractor:(CGPoint)pinchPoint
-//{
-//    for(SoundInteractor *interactor in _soundInteractors){
-//        if(pinchPoint.x > interactor.position.x - interactor.frame.size.width/2 && pinchPoint.x < interactor.position.x + interactor.frame.size.width/2 && pinchPoint.y > interactor.position.y - interactor.frame.size.height/2 && pinchPoint.y < interactor.position.y + interactor.frame.size.height/2){
-//            NSLog(@"Pinch point(%f,%f)   interactorFrame:(%f,%f)(%f,%f)", pinchPoint.x, pinchPoint.y, interactor.position.x - interactor.frame.size.width/2, interactor.position.y - interactor.frame.size.height/2, interactor.position.x + interactor.frame.size.width/2, interactor.position.y + interactor.frame.size.height/2);
-//            _pinchingInteractor = interactor;
-//            break;
-//        }
-//    }
-//}
-
-//- (void)updateUI {
-//    for (SoundInteractor *interactor in _soundInteractors) {
-//        double val = 0.87;
-//        double soundAmplitude = interactor.player.audioAnalyzer.trackedAmplitude.value;
-//        interactor.averagedAmplitude = val * interactor.averagedAmplitude + (1 - val) * soundAmplitude;
-//        double scaleFactor = 1 + (interactor.averagedAmplitude * 5);
-//        interactor.xScale = scaleFactor;
-//        interactor.yScale = scaleFactor;
-//    }
-//}
 
 -(void)update:(CFTimeInterval)currentTime {
     /* Called before each frame is rendered */

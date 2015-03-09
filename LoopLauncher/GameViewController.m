@@ -180,6 +180,7 @@
     [UIView animateWithDuration:1 animations:^{
         for(UIView *subView in [self.view subviews]){
             subView.alpha = 0;
+            subView.userInteractionEnabled = NO;
         }
     }];
 // Present the scene.
@@ -196,6 +197,7 @@
     [UIView animateWithDuration:1 animations:^{
         for(UIView *subView in [self.view subviews]){
             subView.alpha = 1;
+            subView.userInteractionEnabled = YES;
         }
     }];
     SKScene *blankScene = [[SKScene alloc] initWithSize:self.view.frame.size];
