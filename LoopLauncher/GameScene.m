@@ -10,6 +10,18 @@
 
 @implementation GameScene
 
+-(void)introduceLoops{
+    //SoundInteractor *interactor = [SoundInteractor shapeNodeWithCircleOfRadius:_baseInteractorSize/2];
+    if (_loopCounter > _soundInteractors.count - 1) {
+        [_timer invalidate];
+        return;
+    }
+    [self addChild:_soundInteractors[_loopCounter]];
+ 
+    
+    _loopCounter ++;
+}
+
 -(void)didMoveToView:(SKView *)view {
     /* Setup your scene here */
     self.backgroundColor = [SKColor orangeColor];
@@ -20,7 +32,12 @@
     
     
 //    // create all the loopers
+    
+    
+    
     [self addSoundLoopers];
+    _timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(introduceLoops) userInfo:nil repeats:YES];
+    [_timer fire];
     [AKOrchestra start];
     for (SoundFilePlayer *player in _soundLoopers) {
         [player play];
@@ -37,6 +54,9 @@
 -(void)willMoveFromView:(SKView *)view{
 //    [view removeGestureRecognizer:_pinchGestureRecognizer];
 }
+
+
+
 
 // create audio looper and interaction object for each sound file
 -(void)addSoundLoopers {
@@ -64,10 +84,11 @@
     
     _baseInteractorSize = rectSize * .7;
     
+    
     int arrayIndex = 0;
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 4; i++) {
         if (arrayIndex >= [_soundLoopers count]) { break; }
-        for (int j = 0; j < 2; j++) {
+        for (int j = 0; j < 4; j++) {
             if (arrayIndex >= [_soundLoopers count]) { break; }
             
             CGFloat x = j * rectSize + (j + 1) * rectBufferSize;
@@ -81,7 +102,9 @@
             interactor.lineWidth = 3;
             interactor.blendMode = SKBlendModeAdd;
             
+          /*  if (_loopCounter < 1) {
             [self addChild:interactor];
+            }*/
             
             [interactor setPhysicsBody:[SKPhysicsBody bodyWithCircleOfRadius:interactor.frame.size.width/2]];
             interactor.physicsBody.affectedByGravity = NO;
@@ -104,6 +127,9 @@
         }
     }
 }
+
+
+
 
 - (void)didBeginContact:(SKPhysicsContact *)contact
 {

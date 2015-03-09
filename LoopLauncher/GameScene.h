@@ -26,5 +26,7 @@ static const uint32_t borderCategory = 0x1 << 4; // 0000000000000000000000000001
 @property BOOL pinchActive;
 @property UIPinchGestureRecognizer *pinchGestureRecognizer;
 @property SoundInteractor *pinchingInteractor;
+@property int loopCounter;
+@property NSTimer *timer;
 
 @end
