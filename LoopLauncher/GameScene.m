@@ -30,12 +30,6 @@
         [player play];
         [player.audioAnalyzer play];
     }
-    
-//    [self startAnalysisSequence];
-    
-//    _pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchInteractor:)];
-//    _pinchGestureRecognizer.delegate = self;
-//    [view addGestureRecognizer:_pinchGestureRecognizer];
 }
 
 -(void)willMoveFromView:(SKView *)view{
@@ -205,24 +199,6 @@
     }
 }
 
-//-(void)startAnalysisSequence
-//{
-//    _analysisSequence = [AKSequence sequence];
-//    _updateAnalysis = [[AKEvent alloc] initWithBlock:^{
-//        [self performSelectorOnMainThread:@selector(updateUI) withObject:self waitUntilDone:NO];
-//        [_analysisSequence addEvent:_updateAnalysis afterDuration:0.05];
-//    }];
-//    [_analysisSequence addEvent:_updateAnalysis];
-//    
-//    _averagedAmplitudes = [[NSMutableArray alloc] init];
-//    _smoothedAmplitudes = [[NSMutableArray alloc] init];
-//    for (int i = 0; i < _soundLoopers.count; i++) {
-//        [_averagedAmplitudes addObject:[NSNumber numberWithDouble:0.0]];
-//        [_averagedAmplitudes addObject:[NSNumber numberWithDouble:0.0]];
-//    }
-//    
-//    [_analysisSequence play];
-//}
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     /* Called when a touch begins */

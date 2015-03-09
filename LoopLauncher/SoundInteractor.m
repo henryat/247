@@ -17,26 +17,46 @@
         _state = NO;
         _averagedAmplitude = 0.0;
         
+        _volumeUpSequence = [AKSequence sequence];
+        _volumeUpEvent = [[AKEvent alloc] initWithBlock:^{
+            if (_player.amplitude.value < _player.amplitude.maximum) {
+                _player.amplitude.value += 0.005;
+                [_volumeUpSequence addEvent:_volumeUpEvent afterDuration:0.01];
+            }
+        }];
+        [_volumeUpSequence addEvent:_volumeUpEvent];
+        
+        _volumeDownSequence = [AKSequence sequence];
+        _volumeDownEvent = [[AKEvent alloc] initWithBlock:^{
+            if (_player.amplitude.value > _player.amplitude.minimum) {
+                _player.amplitude.value -= 0.005;
+                [_volumeDownSequence addEvent:_volumeDownEvent afterDuration:0.01];
+            }
+        }];
+        [_volumeDownSequence addEvent:_volumeDownEvent];
+        
         self.strokeColor = [SKColor grayColor];
-        self.fillColor = [SKColor darkGrayColor];
+        self.fillColor = [SKColor blackColor];
         self.alpha = .4;
         self.lineWidth = 3;
         self.blendMode = SKBlendModeAdd;
-        self.glowWidth = 5;        
+        self.glowWidth = 5;
 }
     
     return self;
 }
 
 - (void)turnOn {
-    [_player.amplitude setValue:_player.amplitude.maximum];
-    self.fillColor = [SKColor greenColor];
+    [_volumeDownSequence stop];
+    [_volumeUpSequence play];
+    self.fillColor = [SKColor whiteColor];
     _state = YES;
 }
 
 - (void)turnOff {
-    [_player.amplitude setValue:_player.amplitude.minimum];
-    self.fillColor = [SKColor darkGrayColor];
+    [_volumeUpSequence stop];
+    [_volumeDownSequence play];
+    self.fillColor = [SKColor blackColor];
     _state = NO;
 }
 
