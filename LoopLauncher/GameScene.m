@@ -82,7 +82,7 @@
 -(void)didMoveToView:(SKView *)view {
     
     /* Setup your scene here */
-    self.backgroundColor = [SKColor orangeColor];
+    self.backgroundColor = [SKColor colorWithRed:10.0/255 green:55.0/255 blue:70.0/255 alpha:1.0];
     self.scaleMode = SKSceneScaleModeAspectFit;
     self.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:self.frame];
     self.physicsBody.categoryBitMask = edgeCategory;
