@@ -14,6 +14,7 @@
 @property UILabel *goalNumberLabel;
 @property UIStepper *goalCounter;
 @property UIView *homeView;
-@property UIView *blankView;
+@property UIView *gameViewContainer;
+@property BOOL shouldHideStatusBar;
 
 @end

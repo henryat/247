@@ -19,14 +19,10 @@ static const uint32_t borderCategory = 0x1 << 4; // 0000000000000000000000000001
 
 @property NSMutableArray *soundLoopers;
 @property NSMutableArray *soundInteractors;
-@property AKEvent *updateAnalysis;
-@property AKSequence *analysisSequence;
 @property double baseInteractorSize;
-@property BOOL pinchActive;
-@property UIPinchGestureRecognizer *pinchGestureRecognizer;
-@property SoundInteractor *pinchingInteractor;
 @property int loopCounter;
 @property NSTimer *timer;
+@property UISwipeGestureRecognizer *swipeRecognizer;
 
 // smooth animation buffers
 @property NSMutableArray *averagedAmplitudes;

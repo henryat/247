@@ -33,6 +33,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    _shouldHideStatusBar = NO;
+    [self setNeedsStatusBarAppearanceUpdate];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnToMenu:) name:@"GoHome" object:nil];
 
@@ -44,17 +46,18 @@
     skView.ignoresSiblingOrder = YES;
     skView.backgroundColor = [UIColor colorWithRed:.9 green:.9 blue:.95 alpha:1];
     
+    _homeView = [[UIView alloc] initWithFrame:self.view.frame];
     [self fillHomeView];
-    _homeView = self.view;
-    _blankView = [[UIView alloc] initWithFrame:self.view.frame];
+    [self.view addSubview:_homeView];
+
     
-    // Create and configure the scene.
-//    GameScene *scene = [GameScene unarchiveFromFile:@"GameScene"];
-//    scene.scaleMode = SKSceneScaleModeAspectFill;
-//    scene.size = [UIScreen mainScreen].bounds.size;
-//    
-//    // Present the scene.
-//    [skView presentScene:scene];
+    _gameViewContainer = [[SKView alloc] initWithFrame:CGRectMake(_homeView.frame.size.width, 0, _homeView.frame.size.width, _homeView.frame.size.height)];
+    [self.view addSubview:_gameViewContainer];
+    
+    SKScene *blankScene = [[SKScene alloc] initWithSize:_homeView.frame.size];
+    blankScene.backgroundColor = [SKColor colorWithRed:.9 green:.9 blue:.905 alpha:1];
+    SKTransition *transition = [SKTransition crossFadeWithDuration:1];
+    [(SKView *)self.view presentScene:blankScene transition:transition];
 }
 
 - (BOOL)shouldAutorotate
@@ -91,7 +94,7 @@
     titleLabel.textColor = [UIColor darkGrayColor];
     [titleLabel sizeToFit];
     titleLabel.frame = CGRectMake((windowWidth - titleLabel.frame.size.width)/2, windowHeight/5 - titleLabel.frame.size.height, titleLabel.frame.size.width, titleLabel.frame.size.height);
-    [self.view addSubview:titleLabel];
+    [_homeView addSubview:titleLabel];
 }
 
 - (void)addFirstScapeButton
@@ -107,7 +110,7 @@
     scapeButton.layer.cornerRadius = 10;
     scapeButton.layer.borderWidth = 2;
     scapeButton.layer.borderColor = [UIColor colorWithRed:.4 green:.4 blue:.4 alpha:.5].CGColor;
-    [self.view addSubview:scapeButton];
+    [_homeView addSubview:scapeButton];
 }
 
 - (void)addSecondScapeButton
@@ -122,7 +125,7 @@
     scapeButton.layer.cornerRadius = 10;
     scapeButton.layer.borderWidth = 2;
     scapeButton.layer.borderColor = [UIColor colorWithRed:.4 green:.4 blue:.4 alpha:.5].CGColor;
-    [self.view addSubview:scapeButton];
+    [_homeView addSubview:scapeButton];
 }
 
 - (void)addGoalCounter
@@ -131,7 +134,7 @@
     CGFloat windowHeight = [UIScreen mainScreen].bounds.size.height;
     _goalCounter = [[UIStepper alloc] init];
     _goalCounter.frame = CGRectMake((windowWidth - _goalCounter.frame.size.width)/2, windowHeight - _goalCounter.frame.size.height - 50, _goalCounter.frame.size.width, _goalCounter.frame.size.height);
-    [self.view addSubview: _goalCounter];
+    [_homeView addSubview: _goalCounter];
     
     [_goalCounter addTarget:self action:@selector(changeCounter) forControlEvents:UIControlEventValueChanged];
     
@@ -149,7 +152,7 @@
     [_goalNumberLabel sizeToFit];
     _goalNumberLabel.frame = CGRectMake((windowWidth - _goalNumberLabel.frame.size.width)/2, _goalCounter.frame.origin.y - _goalNumberLabel.frame.size.height - 40, _goalNumberLabel.frame.size.width ,_goalNumberLabel.frame.size.height);
     _goalNumberLabel.text = [NSString stringWithFormat:@"Weekly Goal: %d", (int)_goalCounter.value];
-    [self.view addSubview:_goalNumberLabel];
+    [_homeView addSubview:_goalNumberLabel];
     
     UILabel *descriptionLabel = [[UILabel alloc] init];
     descriptionLabel.text = [NSString stringWithFormat:@"determines frequency of push reminders"];
@@ -158,7 +161,7 @@
     descriptionLabel.textColor = [UIColor darkGrayColor];
     [descriptionLabel sizeToFit];
     descriptionLabel.frame = CGRectMake((windowWidth - descriptionLabel.frame.size.width)/2, _goalCounter.frame.origin.y - descriptionLabel.frame.size.height - 5, descriptionLabel.frame.size.width, descriptionLabel.frame.size.height);
-    [self.view addSubview:descriptionLabel];
+    [_homeView addSubview:descriptionLabel];
     
     UILabel *completedLabel = [[UILabel alloc] init];
     completedLabel.text = [NSString stringWithFormat:@"Completed: 1"];
@@ -167,7 +170,7 @@
     completedLabel.textColor = [UIColor darkGrayColor];
     [completedLabel sizeToFit];
     completedLabel.frame = CGRectMake((windowWidth - completedLabel.frame.size.width)/2, _goalCounter.frame.origin.y - completedLabel.frame.size.height - 20, completedLabel.frame.size.width, completedLabel.frame.size.height);
-    [self.view addSubview:completedLabel];
+    [_homeView addSubview:completedLabel];
 }
 
 - (void)fireFirstScape
@@ -176,15 +179,16 @@
     GameScene *scene = [GameScene unarchiveFromFile:@"GameScene"];
     scene.scaleMode = SKSceneScaleModeAspectFill;
     scene.size = [UIScreen mainScreen].bounds.size;
-    SKTransition *transition = [SKTransition crossFadeWithDuration:2];
     [UIView animateWithDuration:1 animations:^{
-        for(UIView *subView in [self.view subviews]){
-            subView.alpha = 0;
-            subView.userInteractionEnabled = NO;
-        }
+        _shouldHideStatusBar = YES;
+        [self setNeedsStatusBarAppearanceUpdate];
     }];
 // Present the scene.
-    [(SKView *)self.view presentScene:scene transition:transition];
+    [(SKView *)_gameViewContainer presentScene:scene];
+    [UIView animateWithDuration:1.25 animations:^{
+        _homeView.frame = CGRectMake(-_homeView.frame.size.width, _homeView.frame.origin.y, _homeView.frame.size.width, _homeView.frame.size.height);
+        _gameViewContainer.frame = CGRectMake(0, _gameViewContainer.frame.origin.y, _gameViewContainer.frame.size.width, _gameViewContainer.frame.size.height);
+    }];
 }
 
 - (void)changeCounter
@@ -195,15 +199,18 @@
 - (void)returnToMenu:(NSNotification *)notification
 {
     [UIView animateWithDuration:1 animations:^{
-        for(UIView *subView in [self.view subviews]){
-            subView.alpha = 1;
-            subView.userInteractionEnabled = YES;
+        _shouldHideStatusBar = NO;
+        [self setNeedsStatusBarAppearanceUpdate];
+    }];
+    [UIView animateWithDuration:1.25 animations:^{
+        _homeView.frame = CGRectMake(0, _homeView.frame.origin.y, _homeView.frame.size.width, _homeView.frame.size.height);
+        _gameViewContainer.frame = CGRectMake(_gameViewContainer.frame.size.width, _gameViewContainer.frame.origin.y, _gameViewContainer.frame.size.width, _gameViewContainer.frame.size.height);
+    }completion:^(BOOL didComplete){
+        for(SKView *subview in _gameViewContainer.subviews){
+                [subview removeFromSuperview];
         }
     }];
-    SKScene *blankScene = [[SKScene alloc] initWithSize:self.view.frame.size];
-    blankScene.backgroundColor = [SKColor whiteColor];
-    SKTransition *transition = [SKTransition crossFadeWithDuration:1];
-    [(SKView *)self.view presentScene:blankScene transition:transition];
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -213,7 +220,7 @@
 }
 
 - (BOOL)prefersStatusBarHidden {
-    return YES;
+    return _shouldHideStatusBar;
 }
 
 @end
