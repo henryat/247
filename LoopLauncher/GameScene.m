@@ -97,7 +97,7 @@
     [self addImpulseButton];
     [self addHomeButton];
     [self addResetButton];
-    _timer = [NSTimer scheduledTimerWithTimeInterval:7 target:self selector:@selector(introduceLoops) userInfo:nil repeats:YES];
+    _timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(introduceLoops) userInfo:nil repeats:YES];
     [_timer fire];
     [AKOrchestra start];
     for (SoundFilePlayer *player in _soundLoopers) {
@@ -281,7 +281,6 @@
     
     int arrayIndex = 0;
     for (int i = 0; i < 4; i++) {
-        if (arrayIndex >= [_soundInteractors count]) { break; }
         for (int j = 0; j < 4; j++) {
             if (arrayIndex >= [_soundInteractors count]) { break; }
             

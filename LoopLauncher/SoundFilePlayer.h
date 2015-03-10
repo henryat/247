@@ -14,7 +14,8 @@
 - (instancetype)initWithInfoArray:(NSArray *)info;
 
 @property AKInstrumentProperty *amplitude;
-@property double playbackLevel;
+@property double scaleValue;
+@property NSString *fileName;
 @property (readonly) AKAudio *outputStream;
 @property AKAudioAnalyzer *audioAnalyzer;
 

@@ -31,7 +31,7 @@
 double grayScaleValueOff = 0.2;
 double grayScaleValueOn = 1.0;
 double volumeFadeTimeInSeconds = 1.0;
-double appearAnimationTimeInSeconds = 2.0;
+double appearAnimationTimeInSeconds = 4.0;
 
 - (instancetype)init {
     self = [super init];
@@ -51,6 +51,7 @@ double appearAnimationTimeInSeconds = 2.0;
 
 - (void)setPlayer:(SoundFilePlayer *)player {
     _player = player;
+    self.name = _player.fileName;
     _state = NO;
     _ready = NO;
     _averagedAmplitude = 0.0;
@@ -125,7 +126,7 @@ double appearAnimationTimeInSeconds = 2.0;
     double bias = 0.84;
     double soundAmplitude = _player.audioAnalyzer.trackedAmplitude.value;
     _averagedAmplitude = bias * _averagedAmplitude + (1 - bias) * soundAmplitude;
-    double scaleFactor = 1 + (_averagedAmplitude * 5);
+    double scaleFactor = 1 + (_averagedAmplitude * _player.scaleValue);
     self.xScale = scaleFactor;
     self.yScale = scaleFactor;
     

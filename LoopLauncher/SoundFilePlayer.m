@@ -17,22 +17,22 @@
         SoundFilePlayerNote *note = [[SoundFilePlayerNote alloc] init];
         [self addNoteProperty:note.speed];
         [self addNoteProperty:note.pan];
-        NSString *fileName = info[0];
+        _fileName = info[0];
+        _scaleValue = ((NSNumber *) info[2]).doubleValue;
                 
         NSString *pathToSoundFile;
-        pathToSoundFile = [[NSBundle mainBundle] pathForResource:fileName ofType:@"aiff"];
+        pathToSoundFile = [[NSBundle mainBundle] pathForResource:_fileName ofType:@"aiff"];
         
         AKSoundFile *soundFile;
         soundFile = [[AKSoundFile alloc] initWithFilename: pathToSoundFile];
         [self addFunctionTable:soundFile];
         
         AKStereoSoundFileLooper *looper = [[AKStereoSoundFileLooper alloc] initWithSoundFile:soundFile];
-        float maximumAmplitude = ((NSNumber *) info[1]).floatValue;
+        float maximumAmplitude = ((NSNumber *) info[1]).doubleValue;
         _amplitude = [[AKInstrumentProperty alloc] initWithValue:0.0 minimum:0.0 maximum:maximumAmplitude];
         [self addProperty:_amplitude];
         looper.amplitude = _amplitude;
         [self connect:looper];
-//        self.playbackLevel = ((NSNumber *) info[1]).doubleValue;
         
         AKAudioOutput *audioOutput = [[AKAudioOutput alloc] initWithAudioSource:looper];
         [self connect:audioOutput];
