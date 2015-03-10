@@ -12,6 +12,7 @@
 
 @property(nonatomic) SoundFilePlayer *player;
 @property BOOL state;
+@property BOOL ready;
 @property double averagedAmplitude;
 @property float fillGrayScaleValue;
 
@@ -20,14 +21,17 @@
 @property(nonatomic) AKEvent *volumeDownEvent;
 @property(nonatomic) AKEvent *volumeUpEvent;
 
+@property(nonatomic) NSTimer *increaseSizeTimer;
+
 @end
 
 
 @implementation SoundInteractor
 
-float grayScaleValueOff = 0.3;
-float grayScaleValueOn = 1.0;
-float fadeTimeInSeconds = 1.0;
+double grayScaleValueOff = 0.3;
+double grayScaleValueOn = 1.0;
+double volumeFadeTimeInSeconds = 1.0;
+double appearAnimationTimeInSeconds = 2.0;
 
 - (instancetype)init {
     self = [super init];
@@ -47,10 +51,11 @@ float fadeTimeInSeconds = 1.0;
 - (void)setPlayer:(SoundFilePlayer *)player {
     _player = player;
     _state = NO;
+    _ready = NO;
     _averagedAmplitude = 0.0;
     
-    float volumeStepSize = _player.amplitude.maximum / (fadeTimeInSeconds / 0.01);
-    float grayScaleStepSize = (grayScaleValueOn - grayScaleValueOff) / (fadeTimeInSeconds / 0.01);
+    double volumeStepSize = _player.amplitude.maximum / (volumeFadeTimeInSeconds / 0.01);
+    double grayScaleStepSize = (grayScaleValueOn - grayScaleValueOff) / (volumeFadeTimeInSeconds / 0.01);
         
     _volumeUpSequence = [AKSequence sequence];
     _volumeUpEvent = [[AKEvent alloc] initWithBlock:^{
@@ -77,21 +82,39 @@ float fadeTimeInSeconds = 1.0;
     [_volumeDownSequence addEvent:_volumeDownEvent];
 }
 
+- (void)increaseSize {
+    double scaleStepSize = 1 / (appearAnimationTimeInSeconds / 0.01);
+    self.fillGrayScaleValue = grayScaleValueOff;
+    self.xScale += scaleStepSize;
+    self.yScale += scaleStepSize;
+    if (self.xScale >= 1) {
+        _ready = YES;
+        [_increaseSizeTimer invalidate];
+    }
+}
+
+- (void)appearWithGrowAnimation {
+    _increaseSizeTimer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(increaseSize) userInfo:nil repeats:YES];
+    [_increaseSizeTimer fire];
+}
+
 - (BOOL)getState {
     return _state;
 }
 
 - (void)turnOn {
-    [_volumeDownSequence stop];
-    [_volumeUpSequence play];
-    self.fillColor = [SKColor whiteColor];
-    _state = YES;
+    if (_ready) {
+        [_volumeDownSequence stop];
+        [_volumeUpSequence play];
+//        self.fillColor = [SKColor colorWithWhite:_fillGrayScaleValue alpha:1.0];
+        _state = YES;
+    }
 }
 
 - (void)turnOff {
     [_volumeUpSequence stop];
     [_volumeDownSequence play];
-    self.fillColor = [SKColor darkGrayColor];
+//    self.fillColor = [SKColor colorWithWhite:_fillGrayScaleValue alpha:1.0];
     _state = NO;
 }
 

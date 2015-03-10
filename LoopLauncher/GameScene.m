@@ -45,7 +45,7 @@
         arrayIndex++;
         
         [_soundInteractors addObject:interactor];
-        [self addChild:interactor];
+        
         
         [interactor setPhysicsBody:[SKPhysicsBody bodyWithCircleOfRadius:interactor.frame.size.width/2]];
         interactor.physicsBody.affectedByGravity = NO;
@@ -59,7 +59,15 @@
         interactor.physicsBody.categoryBitMask = ballCategory;
         interactor.physicsBody.collisionBitMask = ballCategory | edgeCategory;
         interactor.physicsBody.contactTestBitMask = edgeCategory | ballCategory;
-        CGVector impulseVec = CGVectorMake((CGFloat) random()/(CGFloat) RAND_MAX * 5, (CGFloat) random()/(CGFloat) RAND_MAX * 5);
+        
+        
+        interactor.xScale = 0;
+        interactor.yScale = 0;
+        [self addChild:interactor];
+        [interactor appearWithGrowAnimation];
+        
+        CGVector impulseVec = CGVectorMake((CGFloat) random()/(CGFloat) RAND_MAX * 5 * pow(interactor.xScale, 2),
+                                           (CGFloat) random()/(CGFloat) RAND_MAX * 5 * pow(interactor.xScale, 2));
         if(rand() > RAND_MAX/2) impulseVec.dx = -impulseVec.dx;
         if(rand() > RAND_MAX/2) impulseVec.dy = -impulseVec.dy;
         [interactor.physicsBody applyImpulse:impulseVec];
@@ -89,7 +97,7 @@
     [self addImpulseButton];
     [self addHomeButton];
     [self addResetButton];
-    _timer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(introduceLoops) userInfo:nil repeats:YES];
+    _timer = [NSTimer scheduledTimerWithTimeInterval:7 target:self selector:@selector(introduceLoops) userInfo:nil repeats:YES];
     [_timer fire];
     [AKOrchestra start];
     for (SoundFilePlayer *player in _soundLoopers) {
@@ -303,7 +311,9 @@
     /* Called before each frame is rendered */
     
     for (SoundInteractor *interactor in _soundInteractors) {
-        [interactor updateAppearance];
+        if ([interactor getState]) {
+            [interactor updateAppearance];
+        }
     }
 }
 
