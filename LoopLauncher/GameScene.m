@@ -10,52 +10,6 @@
 
 @implementation GameScene
 
--(void)introduceLoops{
-    
-    CGFloat windowWidth = [UIScreen mainScreen].bounds.size.width;
-    CGFloat windowHeight = [UIScreen mainScreen].bounds.size.height;
-    
-    CGFloat rectSize = (windowWidth * 0.75) / 4.0;
-    
-    _baseInteractorSize = rectSize * .7;
-    _loopCounter = 0;
-    
-    for (int i = 0; i < _soundLoopers.count; i++) {
-        
-        CGFloat x = (random()/(CGFloat)RAND_MAX) * windowWidth;
-        CGFloat y = (random()/(CGFloat)RAND_MAX) * windowHeight;
-        if(x > windowWidth - _baseInteractorSize/2) x -= _baseInteractorSize/2;
-        if(x <  _baseInteractorSize/2) x += _baseInteractorSize/2;
-        if(y > windowHeight - _baseInteractorSize/2) y -= _baseInteractorSize/2;
-        if(y < _baseInteractorSize/2) y += _baseInteractorSize/2;
-        
-        SoundInteractor *interactor = [SoundInteractor shapeNodeWithCircleOfRadius:_baseInteractorSize/2];
-        interactor.position = CGPointMake(x + rectSize/2, y);
-        
-        SoundFilePlayer *player = [_soundLoopers objectAtIndex:i];
-        [interactor setPlayer:player];
-        
-        [_soundInteractors addObject:interactor];
-        
-        [interactor setPhysicsBody:[SKPhysicsBody bodyWithCircleOfRadius:interactor.frame.size.width/2]];
-        interactor.physicsBody.affectedByGravity = NO;
-        interactor.physicsBody.dynamic = YES;
-        interactor.physicsBody.restitution = 1.0;
-        interactor.physicsBody.friction = 0.0f;
-        interactor.physicsBody.linearDamping = 0.0f;
-        interactor.physicsBody.angularDamping = 0.0f;
-        interactor.physicsBody.allowsRotation = NO;
-        
-        interactor.physicsBody.categoryBitMask = ballCategory;
-        interactor.physicsBody.collisionBitMask = ballCategory | edgeCategory;
-        interactor.physicsBody.contactTestBitMask = edgeCategory | ballCategory;
-        CGVector impulseVec = CGVectorMake((CGFloat) random()/(CGFloat) RAND_MAX * 5, (CGFloat) random()/(CGFloat) RAND_MAX * 5);
-        if(rand() > RAND_MAX/2) impulseVec.dx = -impulseVec.dx;
-        if(rand() > RAND_MAX/2) impulseVec.dy = -impulseVec.dy;
-        [interactor.physicsBody applyImpulse:impulseVec];
-    }
-}
-
 -(void)didMoveToView:(SKView *)view {
     
     /* Setup your scene here */
@@ -65,15 +19,13 @@
     self.physicsBody.categoryBitMask = edgeCategory;
     self.physicsWorld.contactDelegate = self;
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(animateLoopers:) name:@"AnimateLoopers" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetScene) name:@"ResetLoopers" object:nil];
     
     // create all the loopers
     [self addSoundLoopers];
-//    [self addImpulseButton];
-//    [self addHomeButton];
-//    [self addResetButton];
     [self introduceLoops];
-    _timer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(bringInNewLoop) userInfo:nil repeats:YES];
-    [_timer fire];
+    [self bringInNewLoop];
     [AKOrchestra start];
     for (SoundFilePlayer *player in _soundLoopers) {
         [player play];
@@ -87,22 +39,20 @@
 - (void)bringInNewLoop {
     if (_loopCounter == 0) {
         for(int i = 0; i <= 3; i++){
-            [self addNextInteractor];
+            [self addNextInteractor:NO];
         }
     } else {
-        [self addNextInteractor];
+        [self addNextInteractor:YES];
     }
 }
 
--(void)addNextInteractor
+-(void)addNextInteractor:(BOOL)shouldMove
 {
     SoundInteractor *interactor = _soundInteractors[_loopCounter];
     [self addChild:interactor];
-    
-    CGVector impulseVec = CGVectorMake((CGFloat) random()/(CGFloat) RAND_MAX * 5, (CGFloat) random()/(CGFloat) RAND_MAX * 5);
-    if(rand() > RAND_MAX/2) impulseVec.dx = -impulseVec.dx;
-    if(rand() > RAND_MAX/2) impulseVec.dy = -impulseVec.dy;
-    [interactor.physicsBody applyImpulse:impulseVec];
+    if(shouldMove){
+        [self moveInteractor:interactor];
+    }
     
     _loopCounter ++;
     
@@ -110,6 +60,14 @@
         [_timer invalidate];
         return;
     }
+}
+
+-(void)moveInteractor:(SoundInteractor *)interactor
+{
+    CGVector impulseVec = CGVectorMake((CGFloat) random()/(CGFloat) RAND_MAX * 5, (CGFloat) random()/(CGFloat) RAND_MAX * 5);
+    if(rand() > RAND_MAX/2) impulseVec.dx = -impulseVec.dx;
+    if(rand() > RAND_MAX/2) impulseVec.dy = -impulseVec.dy;
+    [interactor.physicsBody applyImpulse:impulseVec];
 }
 
 -(void)willMoveFromView:(SKView *)view{
@@ -132,6 +90,55 @@
         [_soundLoopers addObject:player];
         [AKOrchestra addInstrument:player];
         [AKOrchestra addInstrument:player.audioAnalyzer];
+    }
+}
+
+-(void)introduceLoops{
+    
+    CGFloat windowWidth = [UIScreen mainScreen].bounds.size.width;
+    CGFloat windowHeight = [UIScreen mainScreen].bounds.size.height;
+    
+    CGFloat rectSize = (windowWidth * 0.75) / 4.0;
+    
+    _baseInteractorSize = rectSize * .7;
+    _loopCounter = 0;
+    
+    for (int i = 0; i < _soundLoopers.count; i++) {
+        
+        CGFloat x = (random()/(CGFloat)RAND_MAX) * windowWidth;
+        CGFloat y = (random()/(CGFloat)RAND_MAX) * windowHeight;
+        if(x > windowWidth - _baseInteractorSize/2) x -= _baseInteractorSize/2;
+        if(x <  _baseInteractorSize/2) x += _baseInteractorSize/2;
+        if(y > windowHeight - _baseInteractorSize/2) y -= _baseInteractorSize/2;
+        if(y < _baseInteractorSize/2) y += _baseInteractorSize/2;
+        
+        SoundInteractor *interactor = [SoundInteractor shapeNodeWithCircleOfRadius:_baseInteractorSize/2];
+        interactor.position = CGPointMake(x, y);
+        
+        SoundFilePlayer *player = [_soundLoopers objectAtIndex:i];
+        [interactor setPlayer:player];
+        
+        [_soundInteractors addObject:interactor];
+        
+        [interactor setPhysicsBody:[SKPhysicsBody bodyWithCircleOfRadius:interactor.frame.size.width/2]];
+        interactor.physicsBody.affectedByGravity = NO;
+        interactor.physicsBody.dynamic = YES;
+        interactor.physicsBody.restitution = 1.0;
+        interactor.physicsBody.friction = 0.0f;
+        interactor.physicsBody.linearDamping = 0.0f;
+        interactor.physicsBody.angularDamping = 0.0f;
+        interactor.physicsBody.allowsRotation = NO;
+        
+        interactor.physicsBody.categoryBitMask = ballCategory;
+        interactor.physicsBody.collisionBitMask = ballCategory | edgeCategory;
+        interactor.physicsBody.contactTestBitMask = edgeCategory | ballCategory;
+    }
+}
+
+-(void)animateLoopers:(NSNotification *)notification{
+    _timer = [NSTimer scheduledTimerWithTimeInterval:8 target:self selector:@selector(bringInNewLoop) userInfo:nil repeats:YES];
+    for(int i=0; i<=3; i++){
+        [self moveInteractor:_soundInteractors[i]];
     }
 }
 
@@ -255,62 +262,70 @@
             } else {
                 [interactor turnOff];
             }
-        } else if([touchedNode.name isEqualToString:@"impulseButton"]) {
-            [self applyImpulses];
-        } else if([touchedNode.name isEqualToString:@"homeButton"]) {
-            [self goHome];
-        } else if([touchedNode.name isEqualToString:@"resetButton"]) {
-            [self resetNodes];
+//        } else if([touchedNode.name isEqualToString:@"impulseButton"]) {
+//            [self applyImpulses];
+//        } else if([touchedNode.name isEqualToString:@"homeButton"]) {
+//            [self goHome];
+//        } else if([touchedNode.name isEqualToString:@"resetButton"]) {
+//            [self resetNodes];
         }
     }
 }
 
-- (void)applyImpulses {
-    for(SoundInteractor *interactor in _soundInteractors){
-        CGVector impulseVec = CGVectorMake((CGFloat) random()/(CGFloat) RAND_MAX * 5, (CGFloat) random()/(CGFloat) RAND_MAX * 5);
-        if(rand() > RAND_MAX/2) impulseVec.dx = -impulseVec.dx;
-        if(rand() > RAND_MAX/2) impulseVec.dy = -impulseVec.dy;
-        [interactor.physicsBody applyImpulse:impulseVec];
-    }
-}
+//- (void)applyImpulses {
+//    for(SoundInteractor *interactor in _soundInteractors){
+//        CGVector impulseVec = CGVectorMake((CGFloat) random()/(CGFloat) RAND_MAX * 5, (CGFloat) random()/(CGFloat) RAND_MAX * 5);
+//        if(rand() > RAND_MAX/2) impulseVec.dx = -impulseVec.dx;
+//        if(rand() > RAND_MAX/2) impulseVec.dy = -impulseVec.dy;
+//        [interactor.physicsBody applyImpulse:impulseVec];
+//    }
+//}
 
-- (void)resetNodes
-{
-    CGFloat windowWidth = [UIScreen mainScreen].bounds.size.width;
-    CGFloat windowHeight = [UIScreen mainScreen].bounds.size.height;
-    
-    CGFloat rectSize = (windowWidth * 0.75) / 4.0;
-    CGFloat rectBufferSize = (windowWidth * 0.25) / 5.0;
-    
-    int arrayIndex = 0;
-    for (int i = 0; i < 4; i++) {
-        if (arrayIndex >= [_soundInteractors count]) { break; }
-        for (int j = 0; j < 4; j++) {
-            if (arrayIndex >= [_soundInteractors count]) { break; }
-            
-            SoundInteractor *interactor = _soundInteractors[arrayIndex];
-            
-            CGFloat x = j * rectSize + (j + 1) * rectBufferSize;
-            CGFloat y = windowHeight - (i + 1) * rectSize - (i + 1) * rectBufferSize - 100;
-            
-            interactor.position = CGPointMake(x + rectSize/2, y);
-            
-            CGVector impulseVec = CGVectorMake((CGFloat) random()/(CGFloat) RAND_MAX * 5, (CGFloat) random()/(CGFloat) RAND_MAX * 5);
-            if(rand() > RAND_MAX/2) impulseVec.dx = -impulseVec.dx;
-            if(rand() > RAND_MAX/2) impulseVec.dy = -impulseVec.dy;
-            [interactor.physicsBody applyImpulse:impulseVec];
-            arrayIndex++;
-        }
-    }
-}
+//- (void)resetNodes
+//{
+//    CGFloat windowWidth = [UIScreen mainScreen].bounds.size.width;
+//    CGFloat windowHeight = [UIScreen mainScreen].bounds.size.height;
+//    
+//    CGFloat rectSize = (windowWidth * 0.75) / 4.0;
+//    CGFloat rectBufferSize = (windowWidth * 0.25) / 5.0;
+//    
+//    int arrayIndex = 0;
+//    for (int i = 0; i < 4; i++) {
+//        if (arrayIndex >= [_soundInteractors count]) { break; }
+//        for (int j = 0; j < 4; j++) {
+//            if (arrayIndex >= [_soundInteractors count]) { break; }
+//            
+//            SoundInteractor *interactor = _soundInteractors[arrayIndex];
+//            
+//            CGFloat x = j * rectSize + (j + 1) * rectBufferSize;
+//            CGFloat y = windowHeight - (i + 1) * rectSize - (i + 1) * rectBufferSize - 100;
+//            
+//            interactor.position = CGPointMake(x + rectSize/2, y);
+//            
+//            CGVector impulseVec = CGVectorMake((CGFloat) random()/(CGFloat) RAND_MAX * 5, (CGFloat) random()/(CGFloat) RAND_MAX * 5);
+//            if(rand() > RAND_MAX/2) impulseVec.dx = -impulseVec.dx;
+//            if(rand() > RAND_MAX/2) impulseVec.dy = -impulseVec.dy;
+//            [interactor.physicsBody applyImpulse:impulseVec];
+//            arrayIndex++;
+//        }
+//    }
+//}
 
 - (void)goHome
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"GoHome" object:nil];
     for(SoundInteractor *interactor in _soundInteractors){
         [interactor turnOff];
+        interactor.physicsBody.velocity = CGVectorMake(0, 0);
     }
-    [AKOrchestra reset];
+    [_timer invalidate];
+}
+
+- (void)resetScene
+{
+    _loopCounter = 0;
+    [self removeAllChildren];
+    [self bringInNewLoop];
 }
 
 -(void)update:(CFTimeInterval)currentTime {

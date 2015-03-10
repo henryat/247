@@ -53,6 +53,12 @@
     
     _gameViewContainer = [[SKView alloc] initWithFrame:CGRectMake(_homeView.frame.size.width, 0, _homeView.frame.size.width, _homeView.frame.size.height)];
     [self.view addSubview:_gameViewContainer];
+    //     Create and configure the scene.
+    GameScene *scene = [GameScene unarchiveFromFile:@"GameScene"];
+    scene.scaleMode = SKSceneScaleModeAspectFill;
+    scene.size = [UIScreen mainScreen].bounds.size;
+    // Present the scene.
+    [(SKView *)_gameViewContainer presentScene:scene];
     
     SKScene *blankScene = [[SKScene alloc] initWithSize:_homeView.frame.size];
     blankScene.backgroundColor = [SKColor colorWithRed:.9 green:.9 blue:.905 alpha:1];
@@ -175,19 +181,13 @@
 
 - (void)fireFirstScape
 {
-//     Create and configure the scene.
-    GameScene *scene = [GameScene unarchiveFromFile:@"GameScene"];
-    scene.scaleMode = SKSceneScaleModeAspectFill;
-    scene.size = [UIScreen mainScreen].bounds.size;
-    [UIView animateWithDuration:1 animations:^{
+    [UIView animateWithDuration:1.25 animations:^{
         _shouldHideStatusBar = YES;
         [self setNeedsStatusBarAppearanceUpdate];
-    }];
-// Present the scene.
-    [(SKView *)_gameViewContainer presentScene:scene];
-    [UIView animateWithDuration:1.25 animations:^{
         _homeView.frame = CGRectMake(-_homeView.frame.size.width, _homeView.frame.origin.y, _homeView.frame.size.width, _homeView.frame.size.height);
         _gameViewContainer.frame = CGRectMake(0, _gameViewContainer.frame.origin.y, _gameViewContainer.frame.size.width, _gameViewContainer.frame.size.height);
+    } completion:^(BOOL finished){
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"AnimateLoopers" object:nil];
     }];
 }
 
@@ -205,10 +205,8 @@
     [UIView animateWithDuration:1.25 animations:^{
         _homeView.frame = CGRectMake(0, _homeView.frame.origin.y, _homeView.frame.size.width, _homeView.frame.size.height);
         _gameViewContainer.frame = CGRectMake(_gameViewContainer.frame.size.width, _gameViewContainer.frame.origin.y, _gameViewContainer.frame.size.width, _gameViewContainer.frame.size.height);
-    }completion:^(BOOL didComplete){
-        for(SKView *subview in _gameViewContainer.subviews){
-                [subview removeFromSuperview];
-        }
+    }completion:^(BOOL finished){
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"ResetLoopers" object:nil];
     }];
     
 }
