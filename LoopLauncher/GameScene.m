@@ -39,20 +39,19 @@
 - (void)bringInNewLoop {
     if (_loopCounter == 0) {
         for(int i = 0; i <= 3; i++){
-            [self addNextInteractor:NO];
+            [self addNextInteractor];
         }
     } else {
-        [self addNextInteractor:YES];
+        [self addNextInteractor];
     }
 }
 
--(void)addNextInteractor:(BOOL)shouldMove
+-(void)addNextInteractor
 {
     SoundInteractor *interactor = _soundInteractors[_loopCounter];
     [self addChild:interactor];
-    if(shouldMove){
-        [self moveInteractor:interactor];
-    }
+    [interactor appearWithGrowAnimation];
+    [self moveInteractor:interactor];
     
     _loopCounter ++;
     
@@ -64,10 +63,10 @@
 
 -(void)moveInteractor:(SoundInteractor *)interactor
 {
-    CGVector impulseVec = CGVectorMake((CGFloat) random()/(CGFloat) RAND_MAX * 5, (CGFloat) random()/(CGFloat) RAND_MAX * 5);
-    if(rand() > RAND_MAX/2) impulseVec.dx = -impulseVec.dx;
-    if(rand() > RAND_MAX/2) impulseVec.dy = -impulseVec.dy;
-    [interactor.physicsBody applyImpulse:impulseVec];
+    CGVector velocityVector = CGVectorMake((CGFloat) random()/(CGFloat) RAND_MAX * 50, (CGFloat) random()/(CGFloat) RAND_MAX * 50);
+    if(rand() > RAND_MAX/2) velocityVector.dx = -velocityVector.dx;
+    if(rand() > RAND_MAX/2) velocityVector.dy = -velocityVector.dy;
+    [interactor.physicsBody setVelocity:velocityVector];
 }
 
 -(void)willMoveFromView:(SKView *)view{
@@ -132,14 +131,14 @@
         interactor.physicsBody.categoryBitMask = ballCategory;
         interactor.physicsBody.collisionBitMask = ballCategory | edgeCategory;
         interactor.physicsBody.contactTestBitMask = edgeCategory | ballCategory;
+        
+        interactor.xScale = 0;
+        interactor.yScale = 0;
     }
 }
 
 -(void)animateLoopers:(NSNotification *)notification{
     _timer = [NSTimer scheduledTimerWithTimeInterval:8 target:self selector:@selector(bringInNewLoop) userInfo:nil repeats:YES];
-    for(int i=0; i<=3; i++){
-        [self moveInteractor:_soundInteractors[i]];
-    }
 }
 
 //- (void)addImpulseButton
