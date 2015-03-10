@@ -96,11 +96,8 @@
     
     // create all the loopers
     [self addSoundLoopers];
-    [self addImpulseButton];
-    [self addHomeButton];
-    [self addResetButton];
-    _timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(introduceLoops) userInfo:nil repeats:YES];
-    [_timer fire];
+    [self introduceLoops];
+    [self bringInNewLoop];
     [AKOrchestra start];
     for (SoundFilePlayer *player in _soundLoopers) {
         [player play];
@@ -388,30 +385,10 @@
 
 - (void)goHome
 {
-    CGFloat windowWidth = [UIScreen mainScreen].bounds.size.width;
-    CGFloat windowHeight = [UIScreen mainScreen].bounds.size.height;
-    
-    CGFloat rectSize = (windowWidth * 0.75) / 4.0;
-    CGFloat rectBufferSize = (windowWidth * 0.25) / 5.0;
-    
-    int arrayIndex = 0;
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            if (arrayIndex >= [_soundInteractors count]) { break; }
-            
-            SoundInteractor *interactor = _soundInteractors[arrayIndex];
-            
-            CGFloat x = j * rectSize + (j + 1) * rectBufferSize;
-            CGFloat y = windowHeight - (i + 1) * rectSize - (i + 1) * rectBufferSize - 100;
-            
-            interactor.position = CGPointMake(x + rectSize/2, y);
-            
-            CGVector impulseVec = CGVectorMake((CGFloat) random()/(CGFloat) RAND_MAX * 5, (CGFloat) random()/(CGFloat) RAND_MAX * 5);
-            if(rand() > RAND_MAX/2) impulseVec.dx = -impulseVec.dx;
-            if(rand() > RAND_MAX/2) impulseVec.dy = -impulseVec.dy;
-            [interactor.physicsBody applyImpulse:impulseVec];
-            arrayIndex++;
-        }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"GoHome" object:nil];
+    for(SoundInteractor *interactor in _soundInteractors){
+        [interactor turnOff];
+        interactor.physicsBody.velocity = CGVectorMake(0, 0);
     }
     [_timer invalidate];
 }
