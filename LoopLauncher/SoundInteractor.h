@@ -15,6 +15,7 @@
 - (void)setPlayer:(SoundFilePlayer *)player;
 // 
 - (void)appearWithGrowAnimation;
+- (BOOL)isReady;
 // get on/off state
 - (BOOL)getState;
 // turn on with volume and color fade in

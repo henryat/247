@@ -28,7 +28,7 @@
 
 @implementation SoundInteractor
 
-double grayScaleValueOff = 0.3;
+double grayScaleValueOff = 0.2;
 double grayScaleValueOn = 1.0;
 double volumeFadeTimeInSeconds = 1.0;
 double appearAnimationTimeInSeconds = 2.0;
@@ -38,6 +38,7 @@ double appearAnimationTimeInSeconds = 2.0;
     
     if (self) {
         self.fillGrayScaleValue = grayScaleValueOff;
+        self.fillColor = [SKColor colorWithWhite:_fillGrayScaleValue alpha:1.0];
         self.strokeColor = [SKColor grayColor];
         self.alpha = .4;
         self.lineWidth = 3;
@@ -98,6 +99,10 @@ double appearAnimationTimeInSeconds = 2.0;
     [_increaseSizeTimer fire];
 }
 
+- (BOOL)isReady {
+    return _ready;
+}
+
 - (BOOL)getState {
     return _state;
 }
@@ -106,7 +111,6 @@ double appearAnimationTimeInSeconds = 2.0;
     if (_ready) {
         [_volumeDownSequence stop];
         [_volumeUpSequence play];
-//        self.fillColor = [SKColor colorWithWhite:_fillGrayScaleValue alpha:1.0];
         _state = YES;
     }
 }
@@ -114,7 +118,6 @@ double appearAnimationTimeInSeconds = 2.0;
 - (void)turnOff {
     [_volumeUpSequence stop];
     [_volumeDownSequence play];
-//    self.fillColor = [SKColor colorWithWhite:_fillGrayScaleValue alpha:1.0];
     _state = NO;
 }
 

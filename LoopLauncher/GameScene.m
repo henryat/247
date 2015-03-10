@@ -311,7 +311,7 @@
     /* Called before each frame is rendered */
     
     for (SoundInteractor *interactor in _soundInteractors) {
-        if ([interactor getState]) {
+        if ([interactor isReady]) {
             [interactor updateAppearance];
         }
     }
